@@ -9,6 +9,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "DebugCamera.h"
+#include "NightSky.h"
 
 /// <summary>
 /// ゲームシーン
@@ -43,6 +45,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -57,18 +60,16 @@ private: // メンバ変数
 	WorldTransform worldtransform_;
 	// ビュープロジェクション
 	ViewProjection viewprojection_;
-	// サウンドデータハンドル
-	uint32_t soundHandle_ = 0;
-	// 音声再生ハンドル
-	uint32_t voiceHandle_ = 0;
-	// ImGuiで値を入力する変数
-	float inputFloat3[3] = {
-	    0,
-	    0,
-	    0,
-	};
+
 	// デバッグカメラ
 	DebugCamera* debugcamera_ = nullptr;
+
+	// 天球
+	NightSky* nightSky_ = nullptr;
+	//3Dモデル
+	Model* modelNightSky_ = nullptr;
+	
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
