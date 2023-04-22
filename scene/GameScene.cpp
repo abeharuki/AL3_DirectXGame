@@ -11,6 +11,16 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("jett.jpg");
+	// スプライトの生成
+	sprite_ = Sprite::Create(textureHandle_, {100, 50});
+	// 3Dモデルの生成
+	model_ = Model::Create();
+	// ワールドトランスフォームの初期化
+	worldtransform_.Initialize();
+	// ビュープロジェクションの初期化
+	viewprojection_.Initialize();
 }
 
 void GameScene::Update() {}
