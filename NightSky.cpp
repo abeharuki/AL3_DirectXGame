@@ -11,7 +11,7 @@ void Initialize() {
 }
 
 void Update() {
-	
+	worldTransform.
 }
 
 void Draw() { 
