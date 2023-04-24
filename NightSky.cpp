@@ -1,12 +1,12 @@
 #include "NightSky.h"
 #include <cassert>
-#include "WorldTransform.h"
 
 
-void NightSky::Initialize(Model* model, uint32_t textureHandle) { 
+
+void NightSky::Initialize(Model* model) { 
 	assert(model_);
 	model_ = model;
-	textureHandle_ = textureHandle;
+	
 	worldTransform_.Initialize();
 
 }
@@ -17,7 +17,7 @@ void NightSky::Update() {
 
 void NightSky::Draw(ViewProjection viewprojection_) { 
 	//3Dƒ‚ƒfƒ‹‚Ì•`‰æ
-	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
+	model_->Draw(worldTransform_, viewprojection_);
 
 }
 

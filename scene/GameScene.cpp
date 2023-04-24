@@ -40,7 +40,7 @@ void GameScene::Initialize() {
 	// 天球の作成
 	nightSky_ = new NightSky();
 	//天球の初期化
-	nightSky_->Initialize(modelNightSky_,textureHandle_);
+	nightSky_->Initialize(modelNightSky_);
 	//3Dモデルの作成
 	modelNightSky_ = Model::CreateFromOBJ("sphere", true);
 

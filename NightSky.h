@@ -12,7 +12,8 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* nodel, uint32_t textureHandle);
+	void Initialize(Model* nodel);
+	
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -29,8 +30,7 @@ private:
 	WorldTransform worldTransform_;
 	//モデル
 	Model* model_ = nullptr;
-	//テクスチャハンドル
-	uint32_t textureHandle_ = 0u;
+	
 	
 
 };
