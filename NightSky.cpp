@@ -3,19 +3,21 @@
 #include "WorldTransform.h"
 
 
-void Initialize() { 
+void NightSky::Initialize(Model* model, uint32_t textureHandle) { 
 	assert(model_);
-	
-
+	model_ = model;
+	textureHandle_ = textureHandle;
+	worldTransform_.Initialize();
 
 }
 
-void Update() {
-	worldTransform.
+void NightSky::Update() { 
+	worldTransform_.TransferMatrix();
 }
 
-void Draw() { 
+void NightSky::Draw(ViewProjection viewprojection_) { 
 	//3Dƒ‚ƒfƒ‹‚Ì•`‰æ
+	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
 
 }
 

@@ -22,13 +22,13 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(ViewProjection viewprojection_);
 
 private:
 	//ワールド変換
 	WorldTransform worldTransform_;
 	//モデル
-	Model* modele_ = nullptr;
+	Model* model_ = nullptr;
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	

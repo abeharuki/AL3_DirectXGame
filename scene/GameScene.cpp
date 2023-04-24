@@ -89,7 +89,7 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 	//天球の描画
-	nightSky_->Draw();
+	nightSky_->Draw(viewprojection_);
 
 
 	/// <summary>
