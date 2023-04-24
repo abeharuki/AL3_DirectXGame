@@ -4,7 +4,11 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() { 
+	delete model_;
+	delete player_;
+
+}
 
 void GameScene::Initialize() {
 
@@ -13,17 +17,22 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("jett.jpg");
-	// スプライトの生成
-	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	// ワールドトランスフォームの初期化
-	worldtransform_.Initialize();
 	// ビュープロジェクションの初期化
 	viewprojection_.Initialize();
+	
+	player_ = new Player();
+	player_->Initialize(model_,textureHandle_);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	
+	player_->Update();
+
+
+
+}
 
 void GameScene::Draw() {
 
@@ -47,8 +56,10 @@ void GameScene::Draw() {
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
+	
 
 	/// <summary>
+	player_->Draw(viewprojection_);
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
