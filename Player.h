@@ -8,7 +8,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model_, uint32_t textureHandle_);
+	void Initialize(Model* model, uint32_t textureHandle_);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -33,8 +33,6 @@ public:
 	// 平行移動
 	Matrix4x4 MakeTranselateMatrix(const Vector3& translate);
 
-	// 拡縮
-	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
 	// アフィン変換
 	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate); 

@@ -2,7 +2,7 @@
 #include <cassert>
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
-	assert(modele_);
+	assert(model);
 	textureHandle_ = textureHandle;
 	model_ = model;
 
@@ -140,27 +140,6 @@ Matrix4x4 Player::MakeTranselateMatrix(const Vector3& translate) {
 	return MakeTranslateMatrix;
 };
 
-// 拡縮
-Matrix4x4 Player::MakeScaleMatrix(const Vector3& scale) {
-	Matrix4x4 MakeScaleMatrix;
-	MakeScaleMatrix.m[0][0] = scale.x;
-	MakeScaleMatrix.m[0][1] = 0;
-	MakeScaleMatrix.m[0][2] = 0;
-	MakeScaleMatrix.m[0][3] = 0;
-	MakeScaleMatrix.m[1][0] = 0;
-	MakeScaleMatrix.m[1][1] = scale.y;
-	MakeScaleMatrix.m[1][2] = 0;
-	MakeScaleMatrix.m[1][3] = 0;
-	MakeScaleMatrix.m[2][0] = 0;
-	MakeScaleMatrix.m[2][1] = 0;
-	MakeScaleMatrix.m[2][2] = scale.z;
-	MakeScaleMatrix.m[2][3] = 0;
-	MakeScaleMatrix.m[3][0] = 0;
-	MakeScaleMatrix.m[3][1] = 0;
-	MakeScaleMatrix.m[3][2] = 0;
-	MakeScaleMatrix.m[3][3] = 1;
-	return MakeScaleMatrix;
-};
 
 // アフィン変換
 Matrix4x4 Player::MakeAffineMatrix(
@@ -172,17 +151,17 @@ Matrix4x4 Player::MakeAffineMatrix(
 	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
 
 	Matrix4x4 MakeAffineMatrix;
-	MakeAffineMatrix.m[0][0] = scale.x * rotate.x;
-	MakeAffineMatrix.m[0][1] = scale.x * rotate.y;
-	MakeAffineMatrix.m[0][2] = scale.x * rotate.z;
+	MakeAffineMatrix.m[0][0] = scale.x * rotateXYZMatrix.m[0][0];
+	MakeAffineMatrix.m[0][1] = scale.x * rotateXYZMatrix.m[0][1];
+	MakeAffineMatrix.m[0][2] = scale.x * rotateXYZMatrix.m[0][2];
 	MakeAffineMatrix.m[0][3] = 0;
-	MakeAffineMatrix.m[1][0] = scale.y * rotate.x;
-	MakeAffineMatrix.m[1][1] = scale.y * rotate.y;
-	MakeAffineMatrix.m[1][2] = scale.y * rotate.z;
+	MakeAffineMatrix.m[1][0] = scale.y * rotateXYZMatrix.m[1][0];
+	MakeAffineMatrix.m[1][1] = scale.y * rotateXYZMatrix.m[1][1];
+	MakeAffineMatrix.m[1][2] = scale.y * rotateXYZMatrix.m[1][2];
 	MakeAffineMatrix.m[1][3] = 0;
-	MakeAffineMatrix.m[2][0] = scale.z * rotate.x;
-	MakeAffineMatrix.m[2][1] = scale.z * rotate.y;
-	MakeAffineMatrix.m[2][2] = scale.z * rotate.z;
+	MakeAffineMatrix.m[2][0] = scale.z * rotateXYZMatrix.m[2][0];
+	MakeAffineMatrix.m[2][1] = scale.z * rotateXYZMatrix.m[2][1];
+	MakeAffineMatrix.m[2][2] = scale.z * rotateXYZMatrix.m[2][2];
 	MakeAffineMatrix.m[2][3] = 0;
 	MakeAffineMatrix.m[3][0] = translate.x;
 	MakeAffineMatrix.m[3][1] = translate.y;
@@ -230,7 +209,8 @@ void Player::Update() {
 
 	
 	//平行移動
-	worldTransform_.translation_ = {move.x,move.y,move.z};
+	Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
+	worldTransform_.translation_ = Transform(move, translateMatrix);
 
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
