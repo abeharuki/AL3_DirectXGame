@@ -7,20 +7,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 
 	worldTransform_.Initialize();
-	input_ = Input::GetInstance();
-
+	
 }
 
-
-
 void Player::Update() { 
-	
-	
-	
-	worldTransform_.TransferMatrix();
+	worldTransform_.TransferMatrix(); 
 }
 
 void Player::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection, textureHandle_);
-
 }
