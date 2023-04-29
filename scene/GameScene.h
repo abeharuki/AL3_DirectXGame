@@ -49,18 +49,24 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	//円周率
 	float Pi;
 
 	Vector2 mouse = {};
 
+	//カメラの回転速度
 	float cameraRotaSpeed = 1.0f;
 
 	float anglX;
 	float anglY;
 
+	//
 	Vector3 target = {};
+
+	//プレイヤー座標
 	Vector3 eye = {};
 	
+	//
 	float langth;
 
 	/// <summary>

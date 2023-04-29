@@ -27,9 +27,11 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	mouse.x = input_->GetMousePosition().x;
 	mouse.y = input_->GetMousePosition().y;
+	//マウスの移動量で角度を変更
 	anglX -= input_->GetMouseMove().lX * cameraRotaSpeed;
 	anglY += input_->GetMouseMove().lY * cameraRotaSpeed;
 
+	//注視点の変更
 	target.x = eye.x + cosf(anglX * (Pi/ 180)) * langth;
 	target.y = eye.y + cosf(anglY * (Pi / 180)) * langth;
 	target.z = eye.z + sinf(anglX * (Pi / 180)) * langth;
