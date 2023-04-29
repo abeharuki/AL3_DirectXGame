@@ -2,12 +2,14 @@
 #include "TextureManager.h"
 #include <cassert>
 
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
    delete model_;
    delete player_;
+   delete debugCamera_;
 }
 
 void GameScene::Initialize() {
@@ -26,10 +28,35 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+
+	//デバックカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
+
 }
 
 void GameScene::Update() { 
 	player_->Update(); 
+	debugCamera_->Update();
+
+	#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_X)) {
+		if (isDebugCameraActve_) {
+			debugCamera_->Update();
+
+
+
+		} else {
+		
+		}
+	
+	
+	}
+
+#endif 
+
+
+
+
 
 }
 
