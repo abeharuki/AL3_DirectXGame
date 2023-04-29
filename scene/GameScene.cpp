@@ -8,13 +8,12 @@ GameScene::GameScene() {
 	Pi = 3.14159265369f;
 	eye.x = 500.0f;
 	eye.y = 500.0f;
-	eye.z = 0.0f;
+	eye.z = 10.0f;
 	langth = 50.0f;
 	
 }
 
 GameScene::~GameScene() {}
-
 
 
 void GameScene::Initialize() {
