@@ -1,10 +1,21 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "ImGuiManager.h"
 
-GameScene::GameScene() {}
+GameScene::GameScene() { 
+	cameraRotaSpeed = 1.0f; 
+	Pi = 3.14159265369f;
+	eye.x = 500.0f;
+	eye.y = 500.0f;
+	eye.z = 0.0f;
+	langth = 50.0f;
+	
+}
 
 GameScene::~GameScene() {}
+
+
 
 void GameScene::Initialize() {
 
@@ -13,7 +24,25 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 }
 
-void GameScene::Update() {}
+void GameScene::Update() { 
+	mouse.x = input_->GetMousePosition().x;
+	mouse.y = input_->GetMousePosition().y;
+	anglX -= input_->GetMouseMove().lX * cameraRotaSpeed;
+	anglY += input_->GetMouseMove().lY * cameraRotaSpeed;
+
+	target.x = eye.x + cosf(anglX * (Pi/ 180)) * langth;
+	target.y = eye.y + cosf(anglY * (Pi / 180)) * langth;
+	target.z = eye.z + sinf(anglX * (Pi / 180)) * langth;
+
+
+
+
+
+	ImGui::Text("camera pos %f,%f", anglX, anglY);
+
+
+
+}
 
 void GameScene::Draw() {
 
@@ -27,6 +56,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+	
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

@@ -9,6 +9,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -40,10 +41,27 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+
+	
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+
+	float Pi;
+
+	Vector2 mouse = {};
+
+	float cameraRotaSpeed = 1.0f;
+
+	float anglX;
+	float anglY;
+
+	Vector3 target = {};
+	Vector3 eye = {};
+	
+	float langth;
 
 	/// <summary>
 	/// ゲームシーン用
