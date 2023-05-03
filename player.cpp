@@ -187,6 +187,7 @@ Vector3 Player::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 
 void Player::Update() { 
+	const float kCharacterSpeed = 0.2f;
 
 	// 左右移動
 	if (input_->PushKey(DIK_A)) {

@@ -44,5 +44,5 @@ private:
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
-
+	Vector3 move = {0, 0, 0};
 };
