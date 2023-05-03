@@ -8,7 +8,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include "Util.h"
 
 /// <summary>
 /// ゲームシーン
@@ -48,26 +48,33 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	Util* util_ = nullptr;
+
+	WorldTransform worldTransform_;
 
 	//円周率
 	float Pi;
 
-	Vector2 mouse = {};
+	Vector2 mouse;
 
 	//カメラの回転速度
-	float cameraRotaSpeed = 1.0f;
+	float cameraRotaSpeed;
 
 	float anglX;
 	float anglY;
 
 	//
-	Vector3 target = {};
+	Vector3 target;
 
 	//プレイヤー座標
-	Vector3 eye = {};
+	Vector3 eye;
 	
 	//
 	float langth;
+
+	//画面サイズ
+	float kWindowWidtht;
+	float kWindowHeight;
 
 	/// <summary>
 	/// ゲームシーン用

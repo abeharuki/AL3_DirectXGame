@@ -13,7 +13,10 @@ GameScene::GameScene() {
 	
 }
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() { 
+	delete util_;
+
+}
 
 
 void GameScene::Initialize() {
@@ -21,9 +24,33 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	worldTransform_.Initialize();
+
+	util_ = new Util();
+
 }
 
 void GameScene::Update() { 
+
+
+	// 各行列の計算
+	Matrix4x4 worldMatrix = util_->MakeAffineMatrix(
+	    {1.0f, 1.0f, 1.0f}, worldTransform_.rotation_, worldTransform_.translation_);
+
+	Matrix4x4 cameraMatrix = util_->MakeAffineMatrix({1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, eye);
+	Matrix4x4 viewMatrix = util_->Inverse(cameraMatrix);
+
+	Matrix4x4 projecttionMatrix = util_->MakePerspectiverFovMatrix(
+	    0.45f, float(kWindowWidtht) / float(kWindowHeight), 0.1f, 100.0f);
+	// WVPMatrixを作る。同次クリップ空間
+	Matrix4x4 worldViewProjectionMatrix =
+	    util_->Multiply(worldMatrix, util_->Multiply(viewMatrix, projecttionMatrix));
+	// ViewportMatrixを作る
+	Matrix4x4 viewportMatrix =
+	    util_->MakeViewportMatrix(0, 0, float(kWindowWidtht), float(kWindowHeight), 0.0f, 1.0f);
+
+
 	mouse.x = input_->GetMousePosition().x;
 	mouse.y = input_->GetMousePosition().y;
 	//マウスの移動量で角度を変更
@@ -36,7 +63,7 @@ void GameScene::Update() {
 	target.z = eye.z + sinf(anglX * (Pi / 180)) * langth;
 
 
-
+	
 
 
 	ImGui::Text("camera pos %f,%f", anglX, anglY);
