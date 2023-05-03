@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "WorldTransform.h"
 
+
 class Util {
 public:
 	Util();
@@ -50,7 +51,9 @@ public:
 	    MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate){};
 
 private:
+	WorldTransform worldTransform_;
 	Input* input_ = nullptr;
+
 
 };
 

@@ -41,11 +41,7 @@ void GameScene::Update() {
 	Matrix4x4 cameraMatrix = util_->MakeAffineMatrix({1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, eye);
 	Matrix4x4 viewMatrix = util_->Inverse(cameraMatrix);
 
-	Matrix4x4 projecttionMatrix = util_->MakePerspectiverFovMatrix(
-	    0.45f, float(kWindowWidtht) / float(kWindowHeight), 0.1f, 100.0f);
-	// WVPMatrixを作る。同次クリップ空間
-	Matrix4x4 worldViewProjectionMatrix =
-	    util_->Multiply(worldMatrix, util_->Multiply(viewMatrix, projecttionMatrix));
+	
 	// ViewportMatrixを作る
 	Matrix4x4 viewportMatrix =
 	    util_->MakeViewportMatrix(0, 0, float(kWindowWidtht), float(kWindowHeight), 0.0f, 1.0f);

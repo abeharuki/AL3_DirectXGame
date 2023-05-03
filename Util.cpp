@@ -3,6 +3,7 @@
 #include <cmath>
 
 
+
 // “§‹“Š‰es—ñ
 Matrix4x4 Util::MakePerspectiverFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
 	Matrix4x4 MakePerspectiverFovMatrix;
@@ -311,4 +312,10 @@ Matrix4x4 Util::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, co
 	MakeAffineMatrix.m[3][2] = translate.z;
 	MakeAffineMatrix.m[3][3] = 1;
 	return MakeAffineMatrix;
+}
+
+void Util::Initialize() {
+	
+	worldTransform_.Initialize();
+	input_ = Input::GetInstance();
 }
