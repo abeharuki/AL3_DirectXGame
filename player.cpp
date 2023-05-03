@@ -187,6 +187,30 @@ Vector3 Player::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 
 void Player::Update() { 
+
+	// 左右移動
+	if (input_->PushKey(DIK_A)) {
+		move.x -= kCharacterSpeed;
+	} else if (input_->PushKey(DIK_D)) {
+		move.x += kCharacterSpeed;
+	}
+
+	// 上下移動
+	if (input_->PushKey(DIK_S)) {
+		move.y -= kCharacterSpeed;
+	} else if (input_->PushKey(DIK_W)) {
+		move.y += kCharacterSpeed;
+	}
+
+	// 範囲を超えない処理
+
+	// 平行移動
+	Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
+	worldTransform_.translation_ = Transform(move, translateMatrix);
+
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.TransferMatrix();
 	worldTransform_.TransferMatrix(); 
 }
 
