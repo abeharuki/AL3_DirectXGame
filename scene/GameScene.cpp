@@ -1,13 +1,14 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
-
+#include "AxisIndicator.h"
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
    delete model_;
    delete player_;
+   delete debugCamer_;
 }
 
 void GameScene::Initialize() {
@@ -17,7 +18,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("white1x1.png");
+	textureHandle_ = TextureManager::Load("musician.png");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -26,11 +27,14 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+
+	
 }
+
 
 void GameScene::Update() { 
 	player_->Update(); 
-
+	
 }
 
 void GameScene::Draw() {

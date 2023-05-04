@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include <cassert>
+#include "ImGuiManager.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
@@ -7,7 +8,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 
 	worldTransform_.Initialize();
-	
+	input_ = Input::GetInstance();
 }
 
 // 回転X
@@ -185,34 +186,146 @@ Vector3 Player::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return result;
 };
 
+//  クォータニオン作成
+// q = w + xi + yj + zk
+// 　axis　回転させる軸
+// radian 回転させる角度
+// return  回転させる軸と角度を決めてクォータニオンにする
+// オイラー角の実数が入ってるとこを1,実数の値はradianに入れる
+// (例：オイラー角が{5,0,0}だったら　axis{1,0,0} radian 5)
+// マウスで視点移動する場合はradianにマウスの移動量を入れる(多分!)
+Vector4 Player::MakeQuaternion(Vector3& axis, float& radian) {
+	Vector4 quaternion;
+	float halfSin, halfCos; // 動かす角度の半分のsin,cos
+	float normal;
+
+	quaternion = {0, 0, 0, 0};
+	// 回転軸の長さを求める
+	// λ2x+λ2y+λ2z=1方向が重要だからノルムを１に統一
+	normal = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+	if (normal <= 0.0f)
+		return quaternion;
+
+	// 方向ベクトルへ（単位ベクトル：長さは1）
+	// ノルムは１という決まり事
+	// sqrtfは平方根
+	normal = 1.0f / sqrtf(normal);
+	axis.x = axis.x * normal;
+	axis.y = axis.y * normal;
+	axis.z = axis.z * normal;
+
+	// 四次元ベクトル (λ.x*sinθ/2,λ.y*sinθ/2,λ.z*sinθ/2,cosθ/2)
+	halfSin = sinf(radian * 0.5f);
+	halfCos = cosf(radian * 0.5f);
+
+	quaternion.w = halfCos;
+	quaternion.x = axis.x * halfSin;
+	quaternion.y = axis.y * halfSin;
+	quaternion.z = axis.z * halfSin;
+
+	return quaternion;
+}
+
+// クォータニオンの掛け算
+//  left   計算の左の項
+//  right  計算の右の項
+//  return 計算したクォータニオン
+// 掛け算したクォータニオンは、それ自体 1 つの回転
+// つまり(q1*q2)はq1で回転した後にq2さらに回転した結果になる
+Vector4 Player::CalcQuaternion(Vector4& q1,Vector4& q2) {
+	Vector4 quaternion;
+	float num1, num2, num3, num4;
+
+	// w
+	num1 =  q1.w * q2.w;
+	num2 = -q1.x * q2.x;
+	num3 = -q1.y * q2.y;
+	num4 = -q1.z * q2.z;
+	quaternion.w = num1 + num2 + num3 + num4;
+
+	// x
+	num1 = q1.w * q2.x;
+	num2 = q1.x * q2.w;
+	num3 = q1.y * q2.z;
+	num4 =-q1.z * q2.y;
+	quaternion.x = num1 + num2 + num3 + num4;
+
+	// y
+	num1 = q1.w * q2.y;
+	num2 = q1.y * q2.w;
+	num3 = q1.z * q2.x;
+	num4 =-q1.x * q2.z;
+	quaternion.y = num1 + num2 + num3 + num4;
+
+	// z
+	num1 = q1.w * q2.z;
+	num2 = q1.z * q2.w;
+	num3 = q1.x * q2.y;
+	num4 =-q1.y * q2.x;
+	quaternion.z = num1 + num2 + num3 + num4;
+
+	return quaternion;
+}
+
+
+
 
 void Player::Update() { 
-	const float kCharacterSpeed = 0.2f;
+	
 
-	// 左右移動
-	if (input_->PushKey(DIK_A)) {
-		move.x -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_D)) {
-		move.x += kCharacterSpeed;
+	
+
+	
+	// 前後の回転(一人称で言う視点の上下移動)
+	if (input_->PushKey(DIK_UP)) {
+		kRoteXSpeed = 3.0f;
+	} else if (input_->PushKey(DIK_DOWN)) {
+		kRoteXSpeed = -3.0f;
+	} else {
+		kRoteXSpeed = 0.0f;
 	}
 
-	// 上下移動
-	if (input_->PushKey(DIK_S)) {
-		move.y -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_W)) {
-		move.y += kCharacterSpeed;
+	// 左右の回転（一人称で言う視点の左右移動）
+	if (input_->PushKey(DIK_RIGHT)) {
+		kRoteYSpeed = -3.0f;
+	} else if (input_->PushKey(DIK_LEFT)) {
+		kRoteYSpeed = 3.0f;
+	} else {
+		kRoteYSpeed = 0.0f;
 	}
 
+	//回転角度
+	angle.x -= kRoteXSpeed * 3.14f / 180;  
+	angle.y += kRoteYSpeed * 3.14f / 180;
+
+	rad.x = cosf(angle.x);
+	rad.y = cosf(angle.y);
 	// 範囲を超えない処理
 
-	// 平行移動
-	Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
-	worldTransform_.translation_ = Transform(move, translateMatrix);
 
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+
+	//回転させるクォータニオン
+	//x軸の回転
+	Vector4 rotationRight = MakeQuaternion(Right, rad.x);
+	//ｙ軸の回転
+	Vector4 rotationUp = MakeQuaternion(Up, rad.y);
+
+	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
+	Vector4 Concatenate = CalcQuaternion(rotationRight, rotationUp);
+	
+	
+	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
+	worldTransform_.rotation_ = rotat;
+	
+
+	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, rotat, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
-	worldTransform_.TransferMatrix(); 
+	
+
+	ImGui::Begin("Debug1");
+	ImGui::Text("PlayerPos %f,%f,%f", Concatenate.x, rad.y, kRoteXSpeed);
+	ImGui::End();
+	
 }
 
 void Player::Draw(ViewProjection viewprojection) {
