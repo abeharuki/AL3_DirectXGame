@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Input.h"
 #include "WorldTransform.h"
+#include "ViewProjection.h"
 #include <Vector4.h>
 
 
@@ -61,11 +62,13 @@ public:
 	// つまり(q1*q2)はq1で回転した後にq2さらに回転した結果になる
 	Vector4 CalcQuaternion(Vector4& q1,Vector4& q2);
 
-	
-
+	Vector3 RotateQuaternionPosition(Vector3 axis, Vector3 pos, float radius);
 
 private:
 	WorldTransform worldTransform_;
+	// ビュープロジェクション
+	ViewProjection viewprojection_;
+
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
@@ -79,9 +82,10 @@ private:
 	Vector3 Forward = {0, 0, 1};
 
 	Vector2 angle = {0,0};
+	Vector3 target;
 	float kRoteXSpeed = 0.0f;
 	float kRoteYSpeed = 0.0f;
-	float kRoteYSpeed = 0.0f;
+	float kRoteZSpeed = 0.0f;
 	Vector3 q = {0, 0, 0};
 	
 };

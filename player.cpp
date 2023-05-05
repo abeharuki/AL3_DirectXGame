@@ -1,6 +1,7 @@
 ﻿#include "Player.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include "AxisIndicator.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
@@ -8,6 +9,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 
 	worldTransform_.Initialize();
+	// ビュープロジェクションの初期化
+	viewprojection_.Initialize();
 	input_ = Input::GetInstance();
 }
 
@@ -267,7 +270,37 @@ Vector4 Player::CalcQuaternion(Vector4& q1,Vector4& q2) {
 	return quaternion;
 }
 
+// クォータニオンによる回転
+//  axis    回転させたい軸
+//  pos     回転させるオブジェクトの座標
+//  radius  回転させる角度
+//  return  回転後の座標
+// わからないけどオイラー角をクォータニオンに変換それを回転行列に変換してるかも
+Vector3 Player::RotateQuaternionPosition(Vector3 axis, Vector3 pos, float radius) {
+	Vector4 complexNumber, complexConjugateNumber;
+	Vector4 posQuaternion = {0, pos.x, pos.y, pos.z};
+	Vector3 resultPosition;
 
+	if (axis.x == 0 && axis.y == 0 && axis.z == 0 || radius == 0) {
+		return pos;
+	}
+
+	// 右手系と左手系
+	// クォータニオンの作成
+	complexNumber = MakeQuaternion(axis, radius);
+	// 逆回転のクォータニオン
+	complexConjugateNumber = MakeQuaternion(axis, radius);
+
+	// クォータニオンの積
+	posQuaternion = CalcQuaternion(complexNumber, posQuaternion);
+	posQuaternion = CalcQuaternion(posQuaternion, complexConjugateNumber);
+
+	resultPosition.x = posQuaternion.x;
+	resultPosition.y = posQuaternion.y;
+	resultPosition.z = posQuaternion.z;
+
+	return resultPosition;
+}
 
 
 void Player::Update() { 
@@ -298,10 +331,16 @@ void Player::Update() {
 	angle.x -= kRoteXSpeed * 3.14f / 180;  
 	angle.y += kRoteYSpeed * 3.14f / 180;
 
-	rad.x = cosf(angle.x);
-	rad.y = cosf(angle.y);
-	// 範囲を超えない処理
+	rad.x = angle.x;
+	rad.y = angle.y;
+	// マウスでの回転
+	//angle.x -= input_->GetMouseMove().lX * 0.1f;
+	//angle.y += input_->GetMouseMove().lY * 0.1f;
 
+	// 注視点の変更
+	//target.x = cosf(angle.x * 3.14f / 180);
+	//target.y = cosf(angle.y * 3.14f / 180);
+	//target.z = sinf(angle.x * 3.14f / 180);
 
 
 	//回転させるクォータニオン
@@ -309,25 +348,35 @@ void Player::Update() {
 	Vector4 rotationRight = MakeQuaternion(Right, rad.x);
 	//ｙ軸の回転
 	Vector4 rotationUp = MakeQuaternion(Up, rad.y);
-
+	// z軸の回転
 	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
+
+	//x軸クォータニオンとｙ軸クォータニオンの掛け算
 	Vector4 Concatenate = CalcQuaternion(rotationRight, rotationUp);
 	
 	
 	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
-	worldTransform_.rotation_ = rotat;
+	
 	
 
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, rotat, worldTransform_.translation_);
+	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 	
+	viewprojection_.rotation_ = rotat;
+	viewprojection_.translation_ = {0, 0, -10};
+	viewprojection_.matView =
+	    MakeAffineMatrix({0, 0, 0}, viewprojection_.rotation_, viewprojection_.translation_);
+	viewprojection_.TransferMatrix();
 
 	ImGui::Begin("Debug1");
-	ImGui::Text("PlayerPos %f,%f,%f", Concatenate.x, rad.y, kRoteXSpeed);
+	ImGui::Text("radian %f,%f,%f", rad.x, rad.y, kRoteXSpeed);
 	ImGui::End();
 	
+	AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewprojection_);
+
 }
 
 void Player::Draw(ViewProjection viewprojection) {
-	model_->Draw(worldTransform_, viewprojection, textureHandle_);
+	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
 }
