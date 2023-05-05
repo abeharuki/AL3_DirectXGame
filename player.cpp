@@ -365,7 +365,7 @@ void Player::Update() {
 	viewprojection_.rotation_ = rotat;
 	viewprojection_.translation_ = {0, 0, -10};
 	viewprojection_.matView =
-	    MakeAffineMatrix({0, 0, 0}, viewprojection_.rotation_, viewprojection_.translation_);
+	    MakeAffineMatrix({1, 1, 1}, viewprojection_.rotation_, viewprojection_.translation_);
 	viewprojection_.TransferMatrix();
 
 	ImGui::Begin("Debug1");
