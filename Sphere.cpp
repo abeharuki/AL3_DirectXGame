@@ -13,6 +13,7 @@ void Sphere::Initialize(Model* model) {
 
 void Sphere::Update() { 
 
+
     worldTransform_.TransferMatrix(); 
 	
 	ImGui::Begin("Debug1");

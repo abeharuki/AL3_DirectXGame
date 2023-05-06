@@ -358,10 +358,12 @@ void Player::Update() {
 	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
 	
 	
-	
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.rotation_ = {0, 0, 0};
+	worldTransform_.matWorld_ =
+	    MakeAffineMatrix(worldTransform_.scale_, {0,0,0}, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 	
+	//カメラ
 	viewprojection_.rotation_ = rotat;
 	viewprojection_.translation_ = worldTransform_.translation_;
 	viewprojection_.matView =
@@ -371,7 +373,7 @@ void Player::Update() {
 
 	ImGui::Begin("Debug1");
 	ImGui::Text(
-	    "radian %f,%f,%f", worldTransform_.rotation_.x, viewprojection_.rotation_.x,
+	    "player %f,%f,%f", worldTransform_.rotation_.x, viewprojection_.rotation_.x,
 	    kRoteXSpeed);
 	ImGui::End();
 	
