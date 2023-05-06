@@ -206,7 +206,7 @@ void GameScene::Update() {
 	if (input_->TriggerKey(DIK_X)) {
 		if (isDebugCameraActve_) {
 			debugCamera_->Update();
-			viewprojection_.matView = MakeAffineMatrix({1,1,1}, viewprojection_.rotation_, viewprojection_.translation_);
+			viewprojection_.matView = debugCamera_->GetViewProjection().matView;
 			viewprojection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
 			viewprojection_.TransferMatrix();
