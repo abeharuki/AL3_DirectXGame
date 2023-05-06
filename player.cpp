@@ -371,7 +371,7 @@ void Player::Update() {
 
 	ImGui::Begin("Debug1");
 	ImGui::Text(
-	    "radian %f,%f,%f", worldTransform_.translation_.x, viewprojection_.translation_.z,
+	    "radian %f,%f,%f", worldTransform_.rotation_.x, viewprojection_.rotation_.x,
 	    kRoteXSpeed);
 	ImGui::End();
 	
