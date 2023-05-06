@@ -10,7 +10,7 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include "DebugCamera.h"
-
+#include "Sphere.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -74,6 +74,12 @@ private: // メンバ変数
 	float kRoteXSpeed = 0.0f;
 	float kRoteYSpeed = 0.0f;
 	Vector3 q = {0, 0, 0};
+
+
+
+	//背景描画
+	Sphere* sphere_ = nullptr;
+	Model* modelSphere_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

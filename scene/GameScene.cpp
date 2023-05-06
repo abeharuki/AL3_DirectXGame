@@ -9,6 +9,7 @@ GameScene::~GameScene() {
    delete model_;
    delete player_;
    delete debugCamer_;
+   delete modelSphere_;
 }
 
 void GameScene::Initialize() {
@@ -28,12 +29,17 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
 
+	modelSphere_ = Model::CreateFromOBJ("sphere", true);
+	sphere_ = new Sphere();
+	sphere_->Initialize(modelSphere_);
+	
 	
 }
 
 
 void GameScene::Update() { 
 	player_->Update(); 
+	sphere_->Update();
 	
 }
 
@@ -64,6 +70,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewprojection_);
+	sphere_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

@@ -358,18 +358,21 @@ void Player::Update() {
 	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
 	
 	
-
+	
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 	
 	viewprojection_.rotation_ = rotat;
-	viewprojection_.translation_ = {0, 0, -10};
+	viewprojection_.translation_ = worldTransform_.translation_;
 	viewprojection_.matView =
-	    MakeAffineMatrix({1, 1, 1}, viewprojection_.rotation_, viewprojection_.translation_);
+	    MakeAffineMatrix({1,1,1}, viewprojection_.rotation_, viewprojection_.translation_);
+	viewprojection_.matProjection = viewprojection_.matView;
 	viewprojection_.TransferMatrix();
 
 	ImGui::Begin("Debug1");
-	ImGui::Text("radian %f,%f,%f", rad.x, rad.y, kRoteXSpeed);
+	ImGui::Text(
+	    "radian %f,%f,%f", worldTransform_.translation_.x, viewprojection_.translation_.z,
+	    kRoteXSpeed);
 	ImGui::End();
 	
 	AxisIndicator::GetInstance()->SetVisible(true);
