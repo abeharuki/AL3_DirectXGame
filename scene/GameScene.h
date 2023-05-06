@@ -42,8 +42,23 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	
+	Matrix4x4 MakeOrthographicMatrix(
+	    float left, float top, float right, float bottom, float nearClip, float farClip);
 
+	// アフィン変換
+	Matrix4x4
+	    MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+
+	// 回転X
+	Matrix4x4 MakeRotateXMatrix(float theta);
+	// Y
+	Matrix4x4 MakeRotateYMatrix(float theta);
+	// Z
+	Matrix4x4 MakeRotateZMatrix(float theta);
+
+	// スカラー倍
+	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
