@@ -357,6 +357,27 @@ void Player::Update() {
 	
 	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
 	
+
+
+	// 左右移動
+	if (input_->PushKey(DIK_A)) {
+		move.z -= 1;
+	} else if (input_->PushKey(DIK_D)) {
+		move.z +=1;
+	}
+
+	// 上下移動
+	if (input_->PushKey(DIK_S)) {
+		move.y -= 1;
+	} else if (input_->PushKey(DIK_W)) {
+		move.y += 1;
+	}
+
+	// 範囲を超えない処理
+
+	// 平行移動
+	//Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
+	//worldTransform_.translation_ = Transform(move, translateMatrix);
 	
 	worldTransform_.rotation_ = {0, 0, 0};
 	worldTransform_.matWorld_ =
@@ -366,9 +387,8 @@ void Player::Update() {
 	//カメラ
 	viewprojection_.rotation_ = rotat;
 	viewprojection_.translation_ = worldTransform_.translation_;
-	viewprojection_.matView =
-	    MakeAffineMatrix({1,1,1}, viewprojection_.rotation_, viewprojection_.translation_);
-	viewprojection_.matProjection = viewprojection_.matView;
+	
+	viewprojection_.UpdateMatrix();
 	viewprojection_.TransferMatrix();
 
 	ImGui::Begin("Debug1");
