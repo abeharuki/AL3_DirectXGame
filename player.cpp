@@ -222,12 +222,15 @@ void Player::Update() {
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 
+	const float kMoveLimitX = 640.0f;
+	
 
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
 
 	ImGui::Begin("Debug1");
 	ImGui::Text(
-	    "PlayerPos %d.%d,%d", worldTransform_.translation_.x, worldTransform_.translation_.y,
-	    worldTransform_.translation_.z);
+	    "PlayerPos %d.%d,%d", move.x, worldTransform_.translation_.x,
+	    worldTransform_.matWorld_.m[3][0]);
 	ImGui::End();
 	
 }
