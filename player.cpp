@@ -224,7 +224,7 @@ Matrix4x4 Player::QuaternionMatrix(Vector4 quaternion) {
 // return  回転させる軸と角度を決めてクォータニオンにする
 // オイラー角の実数が入ってるとこを1,実数の値はradianに入れる
 // (例：オイラー角が{5,0,0}だったら　axis{1,0,0} radian 5)
-// マウスで視点移動する場合はradianにマウスの移動量を入れる(多分!)
+
 Vector4 Player::MakeQuaternion(Vector3& axis, float& radian) {
 	Vector4 quaternion;
 	float halfSin, halfCos; // 動かす角度の半分のsin,cos
@@ -320,36 +320,39 @@ void Player::Update() {
 	}
 
 	//回転角度
-	angle.x = kRoteXSpeed * 3.14f / 180;  
-	angle.y = kRoteYSpeed * 3.14f / 180;
+	//angle.x -= kRoteXSpeed * 3.14f / 180;  
+	//angle.y += kRoteYSpeed * 3.14f / 180;
 
-	rad.x = angle.x;
-	rad.y = angle.y;
+	//rad.x = angle.x;
+	//rad.y = angle.y;
 	// マウスでの回転
-	//angle.x -= input_->GetMouseMove().lX * 0.1f;
-	//angle.y += input_->GetMouseMove().lY * 0.1f;
+	if (input_->PushKey(DIK_SPACE)) {
+		angle.x -= input_->GetMouseMove().lX * 0.05f;
+		angle.y += input_->GetMouseMove().lY * 0.05f;
+	}
+	
 
-	// 注視点の変更
-	//target.x = cosf(angle.x * 3.14f / 180);
-	//target.y = cosf(angle.y * 3.14f / 180);
-	//target.z = sinf(angle.x * 3.14f / 180);
+	 //注視点の変更
+	target.x = cosf(angle.x * 3.14f / 180);
+	target.y = cosf(angle.y * 3.14f / 180);
+	target.z = sinf(angle.x * 3.14f / 180);
 
 
 
 	
 	//回転させるクォータニオン
 	//x軸の回転
-	Vector4 rotationRight = MakeQuaternion(Right, rad.x);
+	Vector4 rotationRight = MakeQuaternion(Right, target.y);
 	//ｙ軸の回転
-	Vector4 rotationUp = MakeQuaternion(Up, rad.y);
+	Vector4 rotationUp = MakeQuaternion(Up, target.x);
 	// z軸の回転
 	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
 
 	//x軸クォータニオンとｙ軸クォータニオンの掛け算
-	posQuaternion = CalcQuaternion(rotationRight, posQuaternion);
-	posQuaternion = CalcQuaternion(posQuaternion, rotationUp);
+	Vector4 posQuaternion1 = CalcQuaternion(rotationRight, posQuaternion);
+	Vector4 posQuaternion2 = CalcQuaternion(posQuaternion, rotationUp);
 	
-	Vector3 rotat = {posQuaternion.x, posQuaternion.y, posQuaternion.z};
+	Vector3 rotat = {posQuaternion1.x, posQuaternion2.y, 0};
 	
 	
 
@@ -359,7 +362,7 @@ void Player::Update() {
 	//Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
 	//worldTransform_.translation_ = Transform(move, translateMatrix);
 	
-	worldTransform_.rotation_ = rotat;
+	worldTransform_.rotation_ ;
 	
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -367,8 +370,8 @@ void Player::Update() {
 	
 	//カメラ
 	
-	viewprojection_.rotation_;
-	viewprojection_.translation_ = worldTransform_.translation_;
+	viewprojection_.rotation_ = rotat;
+	viewprojection_.translation_ ;
 	
 	viewprojection_.UpdateMatrix();
 	viewprojection_.TransferMatrix();
@@ -385,5 +388,5 @@ void Player::Update() {
 }
 
 void Player::Draw(ViewProjection viewprojection) {
-	model_->Draw(worldTransform_, viewprojection, textureHandle_);
+	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
 }

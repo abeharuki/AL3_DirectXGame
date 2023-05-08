@@ -78,14 +78,17 @@ private:
 
 	Vector3 cameraPos = {0, 0, 0};
 	Vector2 rad = {0.0f, 0.0f};
+
 	//回転軸
 	//{1,0,0}
 	Vector3 Right = {1,0,0};
 	Vector3 Up = {0, 1, 0};
 	Vector3 Forward = {0, 0, 1};
+	//初期軸
 	Vector4 posQuaternion = {
 	    0, viewprojection_.translation_.x, viewprojection_.translation_.y,viewprojection_.translation_.z};
 
+	//
 	Vector2 angle = {0,0};
 	Vector3 target;
 	float kRoteXSpeed = 0.0f;
