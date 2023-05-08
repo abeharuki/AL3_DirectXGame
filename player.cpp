@@ -229,8 +229,7 @@ void Player::Update() {
 
 	ImGui::Begin("Debug1");
 	ImGui::Text(
-	    "PlayerPos %d.%d,%d", move.x, worldTransform_.translation_.x,
-	    worldTransform_.matWorld_.m[3][0]);
+	    "PlayerPos %d.%d,%d", move.x, worldTransform_.translation_.y, move.z);
 	ImGui::End();
 	
 }
