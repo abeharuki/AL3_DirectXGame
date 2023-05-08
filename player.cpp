@@ -349,10 +349,10 @@ void Player::Update() {
 	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
 
 	//x軸クォータニオンとｙ軸クォータニオンの掛け算
-	posQuaternion = CalcQuaternion(rotationRight, posQuaternion);
-	posQuaternion = CalcQuaternion(posQuaternion, rotationUp);
+	Vector4 posQuaternion1 = CalcQuaternion(rotationRight, posQuaternion);
+	Vector4 posQuaternion2 = CalcQuaternion(posQuaternion, rotationUp);
 	
-	Vector3 rotat = {posQuaternion.x, posQuaternion.y, 0};
+	Vector3 rotat = {posQuaternion1.x, posQuaternion2.y, 0};
 	
 	
 
