@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "Input.h"
 #include "WorldTransform.h"
-
+#include "PlayerBullet.h"
 
 class Player {
 public:
@@ -40,10 +40,16 @@ public:
 
 	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
+	void Attack();
+
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	Vector3 move = {0, 0, 0};
+
+	//弾
+	PlayerBullet* bullet_ = nullptr;
+
 };

@@ -187,12 +187,26 @@ Vector3 Player::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return result;
 };
 
+void Player::Attack() { 
+	
+	if (input_->TriggerKey(DIK_SPACE)) {
+		//弾の初期化,生成
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
 
+		//弾の登録
+		bullet_ = newBullet;
+
+
+	}
+
+
+}
 
 void Player::Update() { 
 	
 	const float kCharacterSpeed = 0.2f;
-
+	const float kRotSpeed = 0.02f;
 	
 	// 左右移動
 	if (input_->PushKey(DIK_A)) {
@@ -208,8 +222,18 @@ void Player::Update() {
 		move.y += kCharacterSpeed;
 	}
 
-	
+	//旋回
+	if (input_->PushKey(DIK_RIGHTARROW)) {
+		worldTransform_.rotation_.y += kRotSpeed;
+	} else if (input_->PushKey(DIK_LEFTARROW)) {
+		worldTransform_.rotation_.y -= kRotSpeed;
+	}
 
+	Attack();
+	if (bullet_) {
+		bullet_->Update();
+	
+	}
 	//範囲を超えない処理
 	
 
@@ -236,4 +260,8 @@ void Player::Update() {
 
 void Player::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection, textureHandle_);
+
+	if (bullet_) {
+		bullet_->Draw(viewprojection);
+	}
 }

@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include <d3d12.h>
 #include <wrl.h>
+#include "Player.h"
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
@@ -29,6 +30,13 @@ struct WorldTransform {
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 
+	Player* player_ = nullptr;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~WorldTransform();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -45,4 +53,11 @@ struct WorldTransform {
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
+
+	void UpdateMatrix();
+
+
+
+	
+
 };
