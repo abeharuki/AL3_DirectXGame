@@ -189,6 +189,34 @@ Vector3 Player::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return result;
 };
 
+
+Matrix4x4 Player::QuaternionMatrix(Vector4 quaternion) {
+	Matrix4x4 result;
+	result.m[0][0] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.x * quaternion.x) - 1;
+	result.m[0][1] = 2 * (quaternion.x * quaternion.y) - 2 * (quaternion.z * quaternion.w);
+	result.m[0][2] = 2 * (quaternion.x * quaternion.z) + 2 * (quaternion.y * quaternion.w);
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 2 * (quaternion.x * quaternion.y) + 2 * (quaternion.z * quaternion.w);
+	result.m[1][1] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.y * quaternion.y) - 1;
+	result.m[1][2] = 2 * (quaternion.y * quaternion.z) - 2 * (quaternion.x * quaternion.w);
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 2 * (quaternion.x * quaternion.z) + 2 * (quaternion.y * quaternion.w);
+	result.m[2][1] = 2 * (quaternion.y * quaternion.z) + 2 * (quaternion.x * quaternion.w);
+	result.m[2][2] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.z * quaternion.z) - 1;
+	result.m[2][3] = 0;
+
+	result.m[3][0] = 0;
+	result.m[3][1] = 0;
+	result.m[3][2] = 0;
+	result.m[3][3] = 1;
+
+	return result;
+}
+
+
+
 //  クォータニオン作成
 // q = w + xi + yj + zk
 // 　axis　回転させる軸
@@ -270,44 +298,8 @@ Vector4 Player::CalcQuaternion(Vector4& q1,Vector4& q2) {
 	return quaternion;
 }
 
-// クォータニオンによる回転
-//  axis    回転させたい軸
-//  pos     回転させるオブジェクトの座標
-//  radius  回転させる角度
-//  return  回転後の座標
-// わからないけどオイラー角をクォータニオンに変換それを回転行列に変換してるかも
-Vector3 Player::RotateQuaternionPosition(Vector3 axis, Vector3 pos, float radius) {
-	Vector4 complexNumber, complexConjugateNumber;
-	Vector4 posQuaternion = {0, pos.x, pos.y, pos.z};
-	Vector3 resultPosition;
-
-	if (axis.x == 0 && axis.y == 0 && axis.z == 0 || radius == 0) {
-		return pos;
-	}
-
-	// 右手系と左手系
-	// クォータニオンの作成
-	complexNumber = MakeQuaternion(axis, radius);
-	// 逆回転のクォータニオン
-	complexConjugateNumber = MakeQuaternion(axis, radius);
-
-	// クォータニオンの積
-	posQuaternion = CalcQuaternion(complexNumber, posQuaternion);
-	posQuaternion = CalcQuaternion(posQuaternion, complexConjugateNumber);
-
-	resultPosition.x = posQuaternion.x;
-	resultPosition.y = posQuaternion.y;
-	resultPosition.z = posQuaternion.z;
-
-	return resultPosition;
-}
-
 
 void Player::Update() { 
-	
-
-	
-
 	
 	// 前後の回転(一人称で言う視点の上下移動)
 	if (input_->PushKey(DIK_UP)) {
@@ -328,8 +320,8 @@ void Player::Update() {
 	}
 
 	//回転角度
-	angle.x -= kRoteXSpeed * 3.14f / 180;  
-	angle.y += kRoteYSpeed * 3.14f / 180;
+	angle.x = kRoteXSpeed * 3.14f / 180;  
+	angle.y = kRoteYSpeed * 3.14f / 180;
 
 	rad.x = angle.x;
 	rad.y = angle.y;
@@ -343,6 +335,8 @@ void Player::Update() {
 	//target.z = sinf(angle.x * 3.14f / 180);
 
 
+
+	
 	//回転させるクォータニオン
 	//x軸の回転
 	Vector4 rotationRight = MakeQuaternion(Right, rad.x);
@@ -352,26 +346,12 @@ void Player::Update() {
 	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
 
 	//x軸クォータニオンとｙ軸クォータニオンの掛け算
-	Vector4 Concatenate = CalcQuaternion(rotationRight, rotationUp);
+	posQuaternion = CalcQuaternion(rotationRight, posQuaternion);
+	posQuaternion = CalcQuaternion(posQuaternion, rotationUp);
+	
+	Vector3 rotat = {posQuaternion.x, posQuaternion.y, posQuaternion.z};
 	
 	
-	Vector3 rotat = {Concatenate.x, Concatenate.y, Concatenate.z};
-	
-
-
-	// 左右移動
-	if (input_->PushKey(DIK_A)) {
-		move.z -= 1;
-	} else if (input_->PushKey(DIK_D)) {
-		move.z +=1;
-	}
-
-	// 上下移動
-	if (input_->PushKey(DIK_S)) {
-		move.y -= 1;
-	} else if (input_->PushKey(DIK_W)) {
-		move.y += 1;
-	}
 
 	// 範囲を超えない処理
 
@@ -379,13 +359,15 @@ void Player::Update() {
 	//Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
 	//worldTransform_.translation_ = Transform(move, translateMatrix);
 	
-	worldTransform_.rotation_ = {0, 0, 0};
-	worldTransform_.matWorld_ =
-	    MakeAffineMatrix(worldTransform_.scale_, {0,0,0}, worldTransform_.translation_);
+	worldTransform_.rotation_ = rotat;
+	
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 	
 	//カメラ
-	viewprojection_.rotation_ = rotat;
+	
+	viewprojection_.rotation_;
 	viewprojection_.translation_ = worldTransform_.translation_;
 	
 	viewprojection_.UpdateMatrix();
@@ -403,5 +385,5 @@ void Player::Update() {
 }
 
 void Player::Draw(ViewProjection viewprojection) {
-	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
+	model_->Draw(worldTransform_, viewprojection, textureHandle_);
 }

@@ -42,6 +42,8 @@ public:
 
 	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
+	Matrix4x4 QuaternionMatrix(Vector4 quaternion);
+
 	
 
 	//  クォータニオン作成
@@ -77,9 +79,12 @@ private:
 	Vector3 cameraPos = {0, 0, 0};
 	Vector2 rad = {0.0f, 0.0f};
 	//回転軸
+	//{1,0,0}
 	Vector3 Right = {1,0,0};
 	Vector3 Up = {0, 1, 0};
 	Vector3 Forward = {0, 0, 1};
+	Vector4 posQuaternion = {
+	    0, viewprojection_.translation_.x, viewprojection_.translation_.y,viewprojection_.translation_.z};
 
 	Vector2 angle = {0,0};
 	Vector3 target;
