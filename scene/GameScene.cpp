@@ -56,7 +56,25 @@ void GameScene::Update() {
 	//天球の更新
 	nightSky_->Update();
 
-	
+	#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+
+		isDebugCameraActve_ = true;
+	}
+
+	if (isDebugCameraActve_) {
+		debugCamera_->Update();
+		viewprojection_.matView = debugCamera_->GetViewProjection().matView;
+		viewprojection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+
+		viewprojection_.TransferMatrix();
+
+	} else {
+
+		viewprojection_.UpdateMatrix();
+	}
+
+#endif 
 	
 
 	// デバッグカメラの更新

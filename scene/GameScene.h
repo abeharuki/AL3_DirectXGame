@@ -63,7 +63,7 @@ private: // メンバ変数
 
 	// デバッグカメラ
 	DebugCamera* debugcamera_ = nullptr;
-
+	bool isDebugCameraActve_ = true;
 	// 天球
 	NightSky* nightSky_ = nullptr;
 	//3Dモデル
