@@ -349,10 +349,10 @@ void Player::Update() {
 	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
 
 	//x軸クォータニオンとｙ軸クォータニオンの掛け算
-	Vector4 posQuaternion1 = CalcQuaternion(rotationRight, posQuaternion);
-	Vector4 posQuaternion2 = CalcQuaternion(posQuaternion, rotationUp);
+	posQuaternion = CalcQuaternion(rotationRight, posQuaternion);
+	posQuaternion = CalcQuaternion(posQuaternion, rotationUp);
 	
-	Vector3 rotat = {posQuaternion1.x, posQuaternion2.y, 0};
+	Vector3 rotat = {posQuaternion.x, posQuaternion.y, 0};
 	
 	
 
@@ -361,8 +361,6 @@ void Player::Update() {
 	// 平行移動
 	//Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
 	//worldTransform_.translation_ = Transform(move, translateMatrix);
-	
-	worldTransform_.rotation_ ;
 	
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
