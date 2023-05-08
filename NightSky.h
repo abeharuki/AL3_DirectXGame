@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* nodel);
+	void Initialize(Model* model);
 	
 
 	/// <summary>
