@@ -152,12 +152,14 @@ void Sphere::Update() {
 
 
 
-
-	
+	worldTransform_.translation_ = {0, 0, 0};
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.TransferMatrix();
 };
 
 void Sphere::Draw() { 
 	
-	
+	model_->Draw(worldTransform_, viewprojection_);
 	
 };

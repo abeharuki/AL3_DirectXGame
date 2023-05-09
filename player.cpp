@@ -12,6 +12,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// ビュープロジェクションの初期化
 	viewprojection_.Initialize();
 	input_ = Input::GetInstance();
+
+	
 }
 
 // 回転X
@@ -327,8 +329,12 @@ void Player::Update() {
 	//rad.y = angle.y;
 	// マウスでの回転
 	if (input_->PushKey(DIK_SPACE)) {
-		angle.x -= input_->GetMouseMove().lX * 0.05f;
-		angle.y += input_->GetMouseMove().lY * 0.05f;
+		angle.x -= input_->GetMouseMove().lX * 0.02f;
+		angle.y += input_->GetMouseMove().lY * 0.02f;
+	} else {
+		target.x = 0;
+		target.y = 0;
+	    
 	}
 	
 
@@ -346,21 +352,21 @@ void Player::Update() {
 	//ｙ軸の回転
 	Vector4 rotationUp = MakeQuaternion(Up, target.x);
 	// z軸の回転
-	Vector4 rotationForward = MakeQuaternion(Forward, rad.y); 
+	Vector4 rotationForward = MakeQuaternion(Forward, target.z); 
 
 	//x軸クォータニオンとｙ軸クォータニオンの掛け算
-	Vector4 posQuaternion1 = CalcQuaternion(rotationRight, posQuaternion);
-	Vector4 posQuaternion2 = CalcQuaternion(posQuaternion, rotationUp);
+	Vector4 posQuaternionX = CalcQuaternion(rotationRight, posQuaternion);
+	Vector4 posQuaternionY = CalcQuaternion(posQuaternion, rotationUp);
 	
-	Vector3 rotat = {posQuaternion1.x, posQuaternion2.y, 0};
+	Vector3 rotat = {posQuaternionX.x, posQuaternionY.y, 0};
 	
 	
 
 	// 範囲を超えない処理
 
 	// 平行移動
-	//Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
-	//worldTransform_.translation_ = Transform(move, translateMatrix);
+	Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
+	worldTransform_.translation_ = Transform(move, translateMatrix);
 	
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -369,16 +375,10 @@ void Player::Update() {
 	//カメラ
 	
 	viewprojection_.rotation_ = rotat;
-	viewprojection_.translation_ ;
-	
+	viewprojection_.translation_ = {0, 0,-10};
 	viewprojection_.UpdateMatrix();
 	viewprojection_.TransferMatrix();
 
-	ImGui::Begin("Debug1");
-	ImGui::Text(
-	    "player %f,%f,%f", worldTransform_.rotation_.x, viewprojection_.rotation_.x,
-	    kRoteXSpeed);
-	ImGui::End();
 	
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewprojection_);
@@ -388,3 +388,4 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
 }
+	
