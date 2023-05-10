@@ -4,7 +4,7 @@
 #include "Vector3.h"
 #include <d3d12.h>
 #include <wrl.h>
-#include "Player.h"
+
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
@@ -30,7 +30,7 @@ struct WorldTransform {
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 
-	Player* player_ = nullptr;
+	
 
 	/// <summary>
 	/// デストラクタ

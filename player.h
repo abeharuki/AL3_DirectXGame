@@ -4,6 +4,7 @@
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
 
+
 class Player {
 public:
 	/// <summary>
@@ -49,7 +50,9 @@ private:
 	Input* input_ = nullptr;
 	Vector3 move = {0, 0, 0};
 
+
+
 	//弾
-	PlayerBullet* bullet_ = nullptr;
+	
 
 };
