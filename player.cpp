@@ -66,8 +66,7 @@ void Player::Update() {
 	Matrix4x4 translateMatrix = utility_->MakeTranselateMatrix(move);
 	worldTransform_.translation_ = utility_->Transform(move, translateMatrix);
 
-	worldTransform_.matWorld_ = utility_->MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.UpdateMatrix();
 	worldTransform_.TransferMatrix();
 
 	const float kMoveLimitX = 640.0f;
@@ -77,7 +76,8 @@ void Player::Update() {
 
 	ImGui::Begin("Debug1");
 	ImGui::Text(
-	    "PlayerPos %d.%d,%d", move.x, worldTransform_.translation_.y, move.z);
+	    "PlayerPos %d.%d,%d", worldTransform_.matWorld_.m[3][0], worldTransform_.translation_.y,
+	    move.z);
 	ImGui::End();
 	
 }
