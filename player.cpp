@@ -2,6 +2,16 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
+Player::~Player() { 
+	delete utility_;
+	for (PlayerBullet* bullet : bullets_) {
+
+		delete bullet; 
+	}
+	
+
+
+}
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
@@ -16,11 +26,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 void Player::Attack() { 
 	
 	if (input_->PushKey(DIK_SPACE)) {
-	//弾を生成、初期化
+		
+		
+	    //弾を生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 	    newBullet->Initialize(model_, worldTransform_.translation_);
 
-	    bullet_ = newBullet;
+	    bullets_.push_back(newBullet);
 	
 	}
 
@@ -54,9 +66,9 @@ void Player::Update() {
 
 	Attack();
 
-	if (bullet_) {
+	for (PlayerBullet* bullet : bullets_) {
 
-		bullet_->Update();
+		bullet->Update();
 	}
 	//範囲を超えない処理
 	
@@ -85,8 +97,8 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection, textureHandle_);
 	//弾の描画
-	if (bullet_) {
-		bullet_->Draw(viewprojection);
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(viewprojection);
 	}
 	
 }

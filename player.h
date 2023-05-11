@@ -4,10 +4,12 @@
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
 #include "Utility.h"
+#include <list>
 
 class Player {
 public:
 
+	~Player();
 
 	/// <summary>
 	/// 初期化
@@ -38,6 +40,5 @@ private:
 	Utility* utility_ = nullptr;
 	
 	//弾
-	PlayerBullet* bullet_ = nullptr;
-
+	std::list<PlayerBullet*> bullets_;
 };
