@@ -2,10 +2,16 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
+
+PlayerBullet::~PlayerBullet() { 
+	delete utility_;
+
+}
+
 /// <summary>
 /// 初期化
 /// </summary>
-void PlayerBullet::Initialize(Model* model, Vector3& position){
+void PlayerBullet::Initialize(Model* model, Vector3& position, const Vector3& velocity) {
 
 	assert(model);
 	textureHandle_ = TextureManager::Load("kunai.png");
@@ -14,6 +20,8 @@ void PlayerBullet::Initialize(Model* model, Vector3& position){
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 
+	//引数で受け取った速度をメンバ変数に代入
+	velocity_ = velocity;
 };
 
 /// <summary>
@@ -21,8 +29,15 @@ void PlayerBullet::Initialize(Model* model, Vector3& position){
 /// </summary>
 void PlayerBullet::Update(){
 
-	worldTransform_.UpdateMatrix();
 
+	//時間経過でデス
+	if (--deathTimer_ <= 0) {
+		isDead_ = true;
+	}
+
+	worldTransform_.translation_ = utility_->Add(worldTransform_.translation_, velocity_);
+	worldTransform_.UpdateMatrix();
+	
 
 
 };

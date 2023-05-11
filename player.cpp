@@ -26,11 +26,16 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 void Player::Attack() { 
 	
 	if (input_->PushKey(DIK_SPACE)) {
+		//弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
 		
-		
+		//速度ベクトルを自機の向きに合わせて回転させる
+		velocity = utility_->TransformNormal(velocity, worldTransform_.matWorld_);
+
 	    //弾を生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-	    newBullet->Initialize(model_, worldTransform_.translation_);
+	    newBullet->Initialize(model_, worldTransform_.translation_,velocity);
 
 	    bullets_.push_back(newBullet);
 	
@@ -40,6 +45,17 @@ void Player::Attack() {
 
 void Player::Update() { 
 	
+	// デスフラグが立った弾を削除
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
+
+
 	const float kCharacterSpeed = 0.2f;
 	const float kRotSpeed = 0.02f;
 	
@@ -70,6 +86,11 @@ void Player::Update() {
 
 		bullet->Update();
 	}
+
+
+	
+
+
 	//範囲を超えない処理
 	
 
@@ -79,7 +100,7 @@ void Player::Update() {
 	worldTransform_.translation_ = utility_->Transform(move, translateMatrix);
 
 	worldTransform_.UpdateMatrix();
-	worldTransform_.TransferMatrix();
+	
 
 	const float kMoveLimitX = 640.0f;
 	

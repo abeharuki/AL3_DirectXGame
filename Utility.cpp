@@ -175,3 +175,21 @@ Matrix4x4 Utility::Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	result.z /= w;
 	return result;
 };
+
+ // 加算
+Vector3 Utility::Add(const Vector3& v1, const Vector3& v2) {
+	Vector3 add;
+	add.x = v1.x + v2.x;
+	add.y = v1.y + v2.y;
+	add.z = v1.z + v2.z;
+	return add;
+};
+
+Vector3 Utility::TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector3 result;
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2];
+	
+	return result;
+};
