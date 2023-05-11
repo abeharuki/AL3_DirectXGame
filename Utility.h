@@ -1,32 +1,36 @@
 #pragma once
 #include "WorldTransform.h"
+#include <cassert>
+#include "ImGuiManager.h"
 
 class Utility {
 public:
+	// å›è»¢X
+ Matrix4x4 MakeRotateXMatrix(float theta);
+	// Y
+ Matrix4x4 MakeRotateYMatrix(float theta);
+
+	// Z
+ Matrix4x4 MakeRotateZMatrix(float theta);
+
+	// ã‚¹ã‚«ãƒ©ãƒ¼å€
+ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+
+	// å¹³è¡Œç§»å‹•
+ Matrix4x4 MakeTranselateMatrix(const Vector3& translate);
+
+	// ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›
+ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
+
+};
 	
 
-	// ‰ñ“]X
-	Matrix4x4 MakeRotateXMatrix(float theta);
-	// Y
-	Matrix4x4 MakeRotateYMatrix(float theta);
-	// Z
-	Matrix4x4 MakeRotateZMatrix(float theta);
-
-	// ƒXƒJƒ‰[”{
-	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-
-	// •½sˆÚ“®
-	Matrix4x4 MakeTranselateMatrix(const Vector3& translate);
-
-	// ƒAƒtƒBƒ“•ÏŠ·
-	Matrix4x4
-	    MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-
-	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
 
 
 
-private:
-};
+
 

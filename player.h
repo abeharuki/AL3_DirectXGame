@@ -1,12 +1,14 @@
-﻿#pragma once
+#pragma once
 #include "Model.h"
 #include "Input.h"
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
-
+#include "Utility.h"
 
 class Player {
 public:
+
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -22,24 +24,7 @@ public:
 	/// </summary>
 	void Draw(ViewProjection viewprojection);
 
-	// 回転X
-	Matrix4x4 MakeRotateXMatrix(float theta);
-	// Y
-	Matrix4x4 MakeRotateYMatrix(float theta);
-	// Z
-	Matrix4x4 MakeRotateZMatrix(float theta);
-
-	// スカラー倍
-	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-
-	// 平行移動
-	Matrix4x4 MakeTranselateMatrix(const Vector3& translate);
-
-	// アフィン変換
-	Matrix4x4
-	    MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-
-	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+	
 
 	void Attack();
 
@@ -50,9 +35,9 @@ private:
 	Input* input_ = nullptr;
 	Vector3 move = {0, 0, 0};
 
-
-
-	//弾
+	Utility* utility_ = nullptr;
 	
+	//弾
+	PlayerBullet* bullet_ = nullptr;
 
 };
