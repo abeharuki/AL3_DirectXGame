@@ -88,8 +88,6 @@ void Player::Update() {
 	}
 
 
-	
-
 
 	//範囲を超えない処理
 	

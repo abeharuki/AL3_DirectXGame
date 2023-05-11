@@ -10,6 +10,7 @@ GameScene::~GameScene() {
    delete model_;
    delete player_;
    delete debugCamera_;
+   delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -20,6 +21,7 @@ void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("jett.jpg");
+	enemytextureHandle_ = TextureManager::Load("Brimstone.jpg");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -28,6 +30,10 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+
+	// 敵の追加
+	enemy_ = new Enemy();
+	enemy_->Initialize(model_, enemytextureHandle_);
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -43,7 +49,8 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	player_->Update(); 
 	debugCamera_->Update();
-	
+	enemy_->Update();
+
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_1)) {
 
@@ -94,6 +101,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewprojection_);
+	//敵の描画
+	enemy_->Draw(viewprojection_);
 	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

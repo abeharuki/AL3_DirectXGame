@@ -2,14 +2,12 @@
 #include "Model.h"
 #include "Input.h"
 #include "WorldTransform.h"
-#include "PlayerBullet.h"
 #include "Utility.h"
-#include <list>
 
-class Player {
+class Enemy {
 public:
-
-	~Player();
+	
+	~Enemy();
 
 	/// <summary>
 	/// 初期化
@@ -27,17 +25,10 @@ public:
 	void Draw(ViewProjection viewprojection);
 
 
-	void Attack();
-
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
-	Input* input_ = nullptr;
-	Vector3 move = {0, 0, 0};
-
 	Utility* utility_ = nullptr;
-	
-	//弾
-	std::list<PlayerBullet*> bullets_;
+	Vector3 velocity_ = {0, 0, 0};
 };
