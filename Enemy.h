@@ -3,6 +3,8 @@
 #include "Input.h"
 #include "WorldTransform.h"
 #include "Utility.h"
+#include <list>
+#include "EnemyBullet.h"
 
 class Enemy {
 public:
@@ -24,15 +26,28 @@ public:
 	/// </summary>
 	void Draw(ViewProjection viewprojection);
 
+	//接近フェーズ関数
 	void PhaseApproach(const Vector3& v1, const Vector3& v2);
-
+	//離脱フェーズ関数
 	void PhaseLeave(const Vector3& v1, const Vector3& v2);
 
-private:
+	//弾の関数
+	void Fire();
+
+	void approachInitialize();
+
+public:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Utility* utility_ = nullptr;
+
+	//発射間隔
+	static const int kFireInterval = 60;
+	//発射タイマー
+	int32_t fireTimer_ = 0;
+
+	//フェーズ
 	Vector3 velocityApproach = {0, 0, 0};
 	Vector3 velocityLeave = {0, 0, 0};
 
@@ -43,6 +58,9 @@ private:
 	};
 
 	Phase phase_ = Phase::Approach;
+	
+	//弾
+	std::list<EnemyBullet*> bullets_;
 	
 };
 
