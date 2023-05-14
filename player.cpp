@@ -147,7 +147,7 @@ void Player::Attack() {
 
 	    //弾を生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-	    newBullet->Initialize(model_, worldTransform_.translation_,velocity);
+		newBullet->Initialize(model_, viewprojection_.translation_, velocity);
 
 	    bullets_.push_back(newBullet);
 	
@@ -260,7 +260,7 @@ void Player::Draw(ViewProjection viewprojection) {
 	
 	//弾の描画
 	for (PlayerBullet* bullet : bullets_) {
-		bullet->Draw(viewprojection);
+		bullet->Draw(viewprojection_);
 	}
 	
 }
