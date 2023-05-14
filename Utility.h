@@ -25,8 +25,20 @@ public:
  Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
  // 加算
  Vector3 Add(const Vector3& v1, const Vector3& v2);
- 
 
+ //減算
+ Vector3 Subract(const Vector3& v1, const Vector3& v2);
+ 
+ // スカラー倍
+ Vector3 Multiply(float scalar, const Vector3& v);
+
+ // 長さ(ノルマ)
+ float Length(const Vector3& v);
+
+ // 正規化
+ Vector3 Normalize(const Vector3& v);
+
+ //
  Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
 
 };

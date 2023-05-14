@@ -5,6 +5,9 @@
 #include "Utility.h"
 #include <list>
 #include "EnemyBullet.h"
+#include "player.h"
+
+class Player;
 
 class Enemy {
 public:
@@ -36,6 +39,11 @@ public:
 
 	void approachInitialize();
 
+	void SetPlayer(Player* player) { player_ = player; }
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 public:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -61,6 +69,9 @@ public:
 	
 	//弾
 	std::list<EnemyBullet*> bullets_;
+
+	//自キャラ
+	Player* player_ = nullptr;
 	
 };
 

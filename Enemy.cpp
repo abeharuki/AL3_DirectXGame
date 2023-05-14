@@ -27,17 +27,20 @@ void Enemy::PhaseLeave(const Vector3& v1, const Vector3& v2) {
 
 // 弾の処理
 void Enemy::Fire() {
-
+	assert(player_);
 	// 弾の速度
 	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
 
-	// 速度ベクトルを自機の向きに合わせて回転させる
-	velocity = utility_->TransformNormal(velocity, worldTransform_.matWorld_);
+	Vector3 playerVector = player_->GetWorldPosition();
+	Vector3 enemyVector = GetWorldPosition();
+	Vector3 vector = utility_->Subract(playerVector, enemyVector);
+	vector = utility_->Normalize(vector);
+	Vector3 velocity = utility_->Multiply(kBulletSpeed, vector);
 
+	
 	// 弾を生成、初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	newBullet->Initialize(model_, worldTransform_.translation_, vector);
 
 	bullets_.push_back(newBullet);
 }
@@ -49,6 +52,15 @@ void Enemy::approachInitialize() {
 
 }
 
+Vector3 Enemy::GetWorldPosition() {
+	// ワールド座標を入れる関数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+}
 
 Enemy::~Enemy() {
 	delete utility_;
@@ -67,7 +79,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform_.translation_ = {10, 3, 60};
 	velocityApproach = {0.0f, 0.0f, -0.1f};
 	velocityLeave = {-0.05f, 0.05f, -0.1f};
-
+	
 	//弾を発射
 	Fire();
 	//接近フェーズ初期化

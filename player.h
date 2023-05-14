@@ -29,6 +29,9 @@ public:
 
 	void Attack();
 
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -36,7 +39,10 @@ private:
 	Input* input_ = nullptr;
 	Vector3 move = {0, 0, 0};
 
+	//数学関数
 	Utility* utility_ = nullptr;
+
+	
 	
 	//弾
 	std::list<PlayerBullet*> bullets_;

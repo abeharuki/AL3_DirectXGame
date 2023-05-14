@@ -185,6 +185,41 @@ Vector3 Utility::Add(const Vector3& v1, const Vector3& v2) {
 	return add;
 };
 
+// 減算
+Vector3 Utility::Subract(const Vector3& v1, const Vector3& v2) {
+	Vector3 subract;
+	subract.x = v1.x - v2.x;
+	subract.y = v1.y - v2.y;
+	subract.z = v1.z - v2.z;
+	return subract;
+};
+
+// スカラー倍
+Vector3 Utility::Multiply(float scalar, const Vector3& v) {
+	Vector3 multiply;
+	multiply.x = v.x * scalar;
+	multiply.y = v.y * scalar;
+	multiply.z = v.z * scalar;
+	return multiply;
+};
+
+
+// 長さ(ノルマ)
+float Utility::Length(const Vector3& v) {
+	float length = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	return length;
+};
+
+// 正規化
+Vector3 Utility::Normalize(const Vector3& v) {
+	Vector3 normalize;
+	float mag = 1 / sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	normalize.x = v.x * mag;
+	normalize.y = v.y * mag;
+	normalize.z = v.z * mag;
+	return normalize;
+};
+
 Vector3 Utility::TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result;
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0];
