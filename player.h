@@ -6,6 +6,7 @@
 #include "PlayerBullet.h"
 #include "Utility.h"
 #include <list>
+#include <Vector4.h>
 
 class Player {
 public:
