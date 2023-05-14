@@ -130,6 +130,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 
 	worldTransform_.Initialize();
+	viewprojection_.Initialize();
 	input_ = Input::GetInstance();
 	
 }
