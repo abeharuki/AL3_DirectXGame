@@ -199,8 +199,54 @@ void Player::Update() {
 	}
 
 
+	//rad.x = angle.x;
+	//rad.y = angle.y;
+	// マウスでの回転
+	if (input_->PushKey(DIK_V)) {
+		angle.x -= input_->GetMouseMove().lX * 0.02f;
+		angle.y += input_->GetMouseMove().lY * 0.02f;
+	} else {
+		target.x = 0;
+		target.y = 0;
+	    
+	}
 	
 
+	 //注視点の変更
+	target.x = cosf(angle.x * 3.14f / 180);
+	target.y = cosf(angle.y * 3.14f / 180);
+	target.z = sinf(angle.x * 3.14f / 180);
+
+
+
+	
+	//回転させるクォータニオン
+	//x軸の回転
+	Vector4 rotationRight = MakeQuaternion(Right, target.y);
+	//ｙ軸の回転
+	Vector4 rotationUp = MakeQuaternion(Up, target.x);
+	// z軸の回転
+	Vector4 rotationForward = MakeQuaternion(Forward, target.z); 
+
+	//x軸クォータニオンとｙ軸クォータニオンの掛け算
+	Vector4 posQuaternionX = CalcQuaternion(rotationRight, posQuaternion);
+	Vector4 posQuaternionY = CalcQuaternion(posQuaternion, rotationUp);
+	
+	Vector3 rotat = {posQuaternionX.x, posQuaternionY.y, 0};
+	
+	
+
+	// 範囲を超えない処理
+
+	
+	
+	//カメラ
+	
+	viewprojection_.rotation_ = rotat;
+	viewprojection_.translation_ = {0, 0,0};
+	viewprojection_.UpdateMatrix();
+	viewprojection_.TransferMatrix();
+	
 
 	//範囲を超えない処理
 	
@@ -210,19 +256,12 @@ void Player::Update() {
 	Matrix4x4 translateMatrix = utility_->MakeTranselateMatrix(move);
 	worldTransform_.translation_ = utility_->Transform(move, translateMatrix);
 
+	worldTransform_.rotation_ = rotat;
+
 	worldTransform_.UpdateMatrix();
 	
 
-	const float kMoveLimitX = 640.0f;
 	
-
-	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
-
-	ImGui::Begin("Debug1");
-	ImGui::Text(
-	    "PlayerPos %d.%d,%d", worldTransform_.matWorld_.m[3][0], worldTransform_.translation_.y,
-	    move.z);
-	ImGui::End();
 	
 }
 
