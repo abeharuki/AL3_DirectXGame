@@ -2,6 +2,117 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
+
+
+
+Matrix4x4 Player::QuaternionMatrix(Vector4 quaternion) {
+	Matrix4x4 result;
+	result.m[0][0] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.x * quaternion.x) - 1;
+	result.m[0][1] = 2 * (quaternion.x * quaternion.y) - 2 * (quaternion.z * quaternion.w);
+	result.m[0][2] = 2 * (quaternion.x * quaternion.z) + 2 * (quaternion.y * quaternion.w);
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 2 * (quaternion.x * quaternion.y) + 2 * (quaternion.z * quaternion.w);
+	result.m[1][1] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.y * quaternion.y) - 1;
+	result.m[1][2] = 2 * (quaternion.y * quaternion.z) - 2 * (quaternion.x * quaternion.w);
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 2 * (quaternion.x * quaternion.z) + 2 * (quaternion.y * quaternion.w);
+	result.m[2][1] = 2 * (quaternion.y * quaternion.z) + 2 * (quaternion.x * quaternion.w);
+	result.m[2][2] = 2 * (quaternion.w * quaternion.w) + 2 * (quaternion.z * quaternion.z) - 1;
+	result.m[2][3] = 0;
+
+	result.m[3][0] = 0;
+	result.m[3][1] = 0;
+	result.m[3][2] = 0;
+	result.m[3][3] = 1;
+
+	return result;
+}
+
+//  クォータニオン作成
+// q = w + xi + yj + zk
+// 　axis　回転させる軸
+// radian 回転させる角度
+// return  回転させる軸と角度を決めてクォータニオンにする
+// オイラー角の実数が入ってるとこを1,実数の値はradianに入れる
+// (例：オイラー角が{5,0,0}だったら　axis{1,0,0} radian 5)
+
+Vector4 Player::MakeQuaternion(Vector3& axis, float& radian) {
+	Vector4 quaternion;
+	float halfSin, halfCos; // 動かす角度の半分のsin,cos
+	float normal;
+
+	quaternion = {0, 0, 0, 0};
+	// 回転軸の長さを求める
+	// λ2x+λ2y+λ2z=1方向が重要だからノルムを１に統一
+	normal = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+	if (normal <= 0.0f)
+		return quaternion;
+
+	// 方向ベクトルへ（単位ベクトル：長さは1）
+	// ノルムは１という決まり事
+	// sqrtfは平方根
+	normal = 1.0f / sqrtf(normal);
+	axis.x = axis.x * normal;
+	axis.y = axis.y * normal;
+	axis.z = axis.z * normal;
+
+	// 四次元ベクトル (λ.x*sinθ/2,λ.y*sinθ/2,λ.z*sinθ/2,cosθ/2)
+	halfSin = sinf(radian * 0.5f);
+	halfCos = cosf(radian * 0.5f);
+
+	quaternion.w = halfCos;
+	quaternion.x = axis.x * halfSin;
+	quaternion.y = axis.y * halfSin;
+	quaternion.z = axis.z * halfSin;
+
+	return quaternion;
+}
+
+// クォータニオンの掛け算
+//  left   計算の左の項
+//  right  計算の右の項
+//  return 計算したクォータニオン
+// 掛け算したクォータニオンは、それ自体 1 つの回転
+// つまり(q1*q2)はq1で回転した後にq2さらに回転した結果になる
+Vector4 Player::CalcQuaternion(Vector4& q1, Vector4& q2) {
+	Vector4 quaternion;
+	float num1, num2, num3, num4;
+
+	// w
+	num1 = q1.w * q2.w;
+	num2 = -q1.x * q2.x;
+	num3 = -q1.y * q2.y;
+	num4 = -q1.z * q2.z;
+	quaternion.w = num1 + num2 + num3 + num4;
+
+	// x
+	num1 = q1.w * q2.x;
+	num2 = q1.x * q2.w;
+	num3 = q1.y * q2.z;
+	num4 = -q1.z * q2.y;
+	quaternion.x = num1 + num2 + num3 + num4;
+
+	// y
+	num1 = q1.w * q2.y;
+	num2 = q1.y * q2.w;
+	num3 = q1.z * q2.x;
+	num4 = -q1.x * q2.z;
+	quaternion.y = num1 + num2 + num3 + num4;
+
+	// z
+	num1 = q1.w * q2.z;
+	num2 = q1.z * q2.w;
+	num3 = q1.x * q2.y;
+	num4 = -q1.y * q2.x;
+	quaternion.z = num1 + num2 + num3 + num4;
+
+	return quaternion;
+}
+
+
+
 Player::~Player() { 
 	delete utility_;
 	for (PlayerBullet* bullet : bullets_) {
