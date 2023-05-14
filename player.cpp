@@ -2,7 +2,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
-
+#include "AxisIndicator.h"
 
 
 Matrix4x4 Player::QuaternionMatrix(Vector4 quaternion) {
@@ -168,11 +168,11 @@ void Player::Update() {
 
 
 
-	//const float kCharacterSpeed = 0.2f;
-	//const float kRotSpeed = 0.02f;
+	const float kCharacterSpeed = 0.2f;
+
 	
 	// 左右移動
-	/*	
+	
 	if (input_->PushKey(DIK_A)) {
 		move.x -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_D)) {
@@ -194,7 +194,7 @@ void Player::Update() {
 
 		bullet->Update();
 	}
-	*/
+	
 
 	//rad.x = angle.x;
 	//rad.y = angle.y;
@@ -246,18 +246,21 @@ void Player::Update() {
 	// カメラ
 
 	viewprojection_.rotation_ = rotat;
-	viewprojection_.translation_ = {0, 0, -10};
+	viewprojection_.translation_ = worldTransform_.translation_;
 	viewprojection_.UpdateMatrix();
 	viewprojection_.TransferMatrix();
 	
+
+	AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewprojection_);
 }
 
 void Player::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
-	/*
+	
 	//弾の描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewprojection);
 	}
-	*/
+	
 }
