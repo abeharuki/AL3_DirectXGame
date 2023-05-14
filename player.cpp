@@ -303,23 +303,7 @@ Vector4 Player::CalcQuaternion(Vector4& q1,Vector4& q2) {
 
 void Player::Update() { 
 	
-	// 前後の回転(一人称で言う視点の上下移動)
-	if (input_->PushKey(DIK_UP)) {
-		kRoteXSpeed = 3.0f;
-	} else if (input_->PushKey(DIK_DOWN)) {
-		kRoteXSpeed = -3.0f;
-	} else {
-		kRoteXSpeed = 0.0f;
-	}
 
-	// 左右の回転（一人称で言う視点の左右移動）
-	if (input_->PushKey(DIK_RIGHT)) {
-		kRoteYSpeed = -3.0f;
-	} else if (input_->PushKey(DIK_LEFT)) {
-		kRoteYSpeed = 3.0f;
-	} else {
-		kRoteYSpeed = 0.0f;
-	}
 
 	//回転角度
 	//angle.x -= kRoteXSpeed * 3.14f / 180;  
@@ -364,13 +348,7 @@ void Player::Update() {
 
 	// 範囲を超えない処理
 
-	// 平行移動
-	Matrix4x4 translateMatrix = MakeTranselateMatrix(move);
-	worldTransform_.translation_ = Transform(move, translateMatrix);
 	
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-	worldTransform_.TransferMatrix();
 	
 	//カメラ
 	
