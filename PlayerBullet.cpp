@@ -10,7 +10,7 @@ PlayerBullet::~PlayerBullet() { delete utility_; }
 void PlayerBullet::Initialize(Model* model, Vector3& position, const Vector3& velocity) {
 
 	assert(model);
-	textureHandle_ = TextureManager::Load("kunai.png");
+	textureHandle_ = TextureManager::Load("black.png");
 	model_ = model;
 
 	worldTransform_.Initialize();
