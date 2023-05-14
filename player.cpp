@@ -167,10 +167,11 @@ void Player::Update() {
 
 
 
-	const float kCharacterSpeed = 0.2f;
-	const float kRotSpeed = 0.02f;
+	//const float kCharacterSpeed = 0.2f;
+	//const float kRotSpeed = 0.02f;
 	
 	// 左右移動
+	/*	
 	if (input_->PushKey(DIK_A)) {
 		move.x -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_D)) {
@@ -184,12 +185,7 @@ void Player::Update() {
 		move.y += kCharacterSpeed;
 	}
 
-	//旋回
-	if (input_->PushKey(DIK_RIGHTARROW)) {
-		worldTransform_.rotation_.y += kRotSpeed;
-	} else if (input_->PushKey(DIK_LEFTARROW)) {
-		worldTransform_.rotation_.y -= kRotSpeed;
-	}
+
 
 	Attack();
 
@@ -197,7 +193,7 @@ void Player::Update() {
 
 		bullet->Update();
 	}
-
+	*/
 
 	//rad.x = angle.x;
 	//rad.y = angle.y;
@@ -234,22 +230,7 @@ void Player::Update() {
 	
 	Vector3 rotat = {posQuaternionX.x, posQuaternionY.y, 0};
 	
-	
 
-	// 範囲を超えない処理
-
-	
-	
-	//カメラ
-	
-	viewprojection_.rotation_ = rotat;
-	viewprojection_.translation_ = {0, 0,0};
-	viewprojection_.UpdateMatrix();
-	viewprojection_.TransferMatrix();
-	
-
-	//範囲を超えない処理
-	
 
 
 	// 平行移動
@@ -261,15 +242,21 @@ void Player::Update() {
 	worldTransform_.UpdateMatrix();
 	
 
-	
+	// カメラ
+
+	viewprojection_.rotation_ = rotat;
+	viewprojection_.translation_ = {0, 0, -10};
+	viewprojection_.UpdateMatrix();
+	viewprojection_.TransferMatrix();
 	
 }
 
 void Player::Draw(ViewProjection viewprojection) {
-	model_->Draw(worldTransform_, viewprojection, textureHandle_);
+	model_->Draw(worldTransform_, viewprojection_, textureHandle_);
+	/*
 	//弾の描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewprojection);
 	}
-	
+	*/
 }
