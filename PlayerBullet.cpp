@@ -2,6 +2,20 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
+Vector3 PlayerBullet::GetWorldPosition() {
+	// ワールド座標を入れる関数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+}
+
+// 衝突を検出したら呼び出されるコールバック関数
+void PlayerBullet::OnCollision() { 
+	isDead_ = true;
+}
 
 PlayerBullet::~PlayerBullet() { 
 	delete utility_;

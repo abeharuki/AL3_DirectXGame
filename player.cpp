@@ -23,6 +23,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	
 }
 
+void Player::OnCollision() {}
+
 void Player::Attack() { 
 	
 	if (input_->PushKey(DIK_SPACE)) {
