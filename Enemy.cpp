@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include <player.h>
 
 
 // 接近フェーズ更新関数
@@ -20,16 +21,15 @@ void Enemy::PhaseApproach(const Vector3& v1, const Vector3& v2) {
 	}
 
 }
-// 離脱フェーズ更新関数
-void Enemy::PhaseLeave(const Vector3& v1, const Vector3& v2) {
-	worldTransform_.translation_ = utility_->Add(v1, v2);
-}
+
+
 
 // 弾の処理
 void Enemy::Fire() {
 	assert(player_);
+
 	// 弾の速度
-	const float kBulletSpeed = -1.0f;
+	const float kBulletSpeed = 1.0f;
 
 	Vector3 playerVector = player_->GetWorldPosition();
 	Vector3 enemyVector = GetWorldPosition();
@@ -40,7 +40,7 @@ void Enemy::Fire() {
 	
 	// 弾を生成、初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, vector);
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
 	bullets_.push_back(newBullet);
 }
@@ -50,6 +50,11 @@ void Enemy::approachInitialize() {
 	//発射タイマーを初期化
 	fireTimer_ = kFireInterval;
 
+}
+
+// 離脱フェーズ更新関数
+void Enemy::PhaseLeave(const Vector3& v1, const Vector3& v2) {
+	worldTransform_.translation_ = utility_->Add(v1, v2);
 }
 
 Vector3 Enemy::GetWorldPosition() {

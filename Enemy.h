@@ -5,8 +5,8 @@
 #include "Utility.h"
 #include <list>
 #include "EnemyBullet.h"
-#include "player.h"
 
+//自機クラスの前方宣言
 class Player;
 
 class Enemy {
