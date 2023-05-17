@@ -139,9 +139,12 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_->Initialize(modelSkydome_);
 
+	// レールカメラの生成
+	railCamera_ = new RailCamera();
+	railCamera_->Initialize();
+
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
-
 
 	//軸方向表示
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -158,6 +161,7 @@ void GameScene::Update() {
 	enemy_->Update();
 	skydome_->Update();
 	CheckAllCollision();
+	railCamera_->Update();
 
 
 	#ifdef _DEBUG

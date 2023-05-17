@@ -41,6 +41,9 @@ public:
  //
  Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
 
+ //逆転行列
+ Matrix4x4 Inverse(const Matrix4x4& m);
+
 };
 	
 
