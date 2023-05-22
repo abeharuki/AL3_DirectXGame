@@ -55,6 +55,17 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
+Vector3 Player::GetWorldRotation() {
+	// 角度を入れる関数
+	Vector3 worldRota;
+	// 角度を取得（ラジアン）
+	worldRota.x = worldTransform_.rotation_.x;
+	worldRota.y = worldTransform_.rotation_.y;
+	worldRota.z = worldTransform_.rotation_.z;
+	return worldRota;
+}
+
+
 void Player::Update() { 
 	
 	// デスフラグが立った弾を削除
@@ -109,18 +120,25 @@ void Player::Update() {
 	Matrix4x4 translateMatrix = utility_->MakeTranselateMatrix(move);
 	worldTransform_.translation_ = utility_->Transform(move, translateMatrix);
 
-	worldTransform_.UpdateMatrix();
 	
-
-	const float kMoveLimitX = 640.0f;
 	
+	/*
+	const float kMoveLimitX = 34.0f;
+	const float kMoveLimitY = 18.0f;
 
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.x, -kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.x, +kMoveLimitY);
+	*/
 
-	ImGui::Begin("Debug1");
+	worldTransform_.UpdateMatrix();
+
+	ImGui::Begin("PlayerPos");
 	ImGui::Text(
-	    "PlayerPos %d.%d,%d", worldTransform_.matWorld_.m[3][0], worldTransform_.translation_.y,
-	    move.z);
+	    "PlayerPos %d.%d,%d", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	ImGui::SliderFloat3("pos", &worldTransform_.translation_.x, -10.0f, 10.0f);
 	ImGui::End();
 	
 }

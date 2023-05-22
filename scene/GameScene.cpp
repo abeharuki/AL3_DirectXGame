@@ -104,6 +104,7 @@ GameScene::~GameScene() {
    delete debugCamera_;
    delete enemy_;
    delete modelSkydome_;
+   delete railCamera_;
 }
 
 
@@ -141,7 +142,7 @@ void GameScene::Initialize() {
 
 	// レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize();
+	railCamera_->Initialize(player_->GetWorldPosition(), player_->GetWorldRotation());
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -157,10 +158,12 @@ void GameScene::Initialize() {
 
 void GameScene::Update() { 
 	player_->Update(); 
-	debugCamera_->Update();
 	enemy_->Update();
+
 	skydome_->Update();
 	CheckAllCollision();
+
+	debugCamera_->Update();
 	railCamera_->Update();
 
 

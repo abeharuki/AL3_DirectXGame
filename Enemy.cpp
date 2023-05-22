@@ -82,7 +82,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = {10, 3, 60};
-	velocityApproach = {0.0f, 0.0f, -0.1f};
+	velocityApproach = {0.0f, 0.0f, -0.0f};
 	velocityLeave = {-0.05f, 0.05f, -0.1f};
 	
 	//弾を発射
