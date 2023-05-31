@@ -61,6 +61,7 @@ private: // メンバ変数
 	// 3Dモデル
 	Model* model_ = nullptr;
 	// ビュープロジェクション
+	WorldTransform worldTransform_;
 	ViewProjection viewprojection_;
 
 	//自キャラ

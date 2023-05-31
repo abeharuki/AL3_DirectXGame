@@ -25,14 +25,15 @@ PlayerBullet::~PlayerBullet() {
 /// <summary>
 /// 初期化
 /// </summary>
-void PlayerBullet::Initialize(Model* model, Vector3& position, const Vector3& velocity) {
+void PlayerBullet::Initialize(Model* model,const Vector3& position, const Vector3& velocity) {
 
 	assert(model);
-	textureHandle_ = TextureManager::Load("kunai.png");
+	textureHandle_ = TextureManager::Load("white1x1.png");
 	model_ = model;
 
-	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+	worldTransform_.Initialize();
+	
 
 	//引数で受け取った速度をメンバ変数に代入
 	velocity_ = velocity;
@@ -52,8 +53,10 @@ void PlayerBullet::Update(){
 	worldTransform_.translation_ = utility_->Add(worldTransform_.translation_, velocity_);
 	worldTransform_.UpdateMatrix();
 	
-
-
+    ImGui::Begin("BulletPos");
+	ImGui::Text(
+	    "BulletPos %f,%f,%f", worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z);
+	ImGui::End();
 };
 
 /// <summary>

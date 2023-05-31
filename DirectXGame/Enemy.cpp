@@ -61,9 +61,9 @@ Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる関数
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得（ワールド座標）
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
 
@@ -81,7 +81,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {10, 3, 60};
+	worldTransform_.translation_ = {10, 3, 0};
 	velocityApproach = {0.0f, 0.0f, -0.0f};
 	velocityLeave = {-0.05f, 0.05f, -0.1f};
 	
@@ -129,6 +129,14 @@ void Enemy::Update() {
 	}
 
 	worldTransform_.UpdateMatrix();
+
+	ImGui::Begin("EnemyPos");
+	ImGui::Text(
+	    "EnemyPos %f,%f,%f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	
+	ImGui::End();
+	
 	
 };
 

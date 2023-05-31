@@ -18,6 +18,18 @@ public:
 	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// ビュープロジェクションを取得
+	/// </summary>
+	/// <returns>ビュープロジェクション</returns>
+	const ViewProjection& GetViewProjection() { return viewProjection_; }
+
+	/// <summary>
+	/// ワールドトランスフォームを取得
+	/// </summary>
+	const WorldTransform& GetWorldMatrix() { return worldTransform_; }
+
+
 private:
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
@@ -26,8 +38,10 @@ private:
 	Utility* utility_ = nullptr;
 
 	// 速度
-	Vector3 velocity_;
+	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
 	// 角度
-	Vector3 rotation_;
+	Vector3 rotation_ = {0.0f,0.0f,0.0f};
+
+
 };
 

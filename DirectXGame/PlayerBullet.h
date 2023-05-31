@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, Vector3& position,const Vector3& velocity);
+	void Initialize(Model* model,const Vector3& position, const Vector3& velocity);
 
 	/// <summary>
 	/// 毎フレーム処理
