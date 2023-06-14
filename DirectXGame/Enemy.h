@@ -4,10 +4,12 @@
 #include "WorldTransform.h"
 #include "Utility.h"
 #include <list>
-#include "EnemyBullet.h"
 
-//自機クラスの前方宣言
+
+
+//クラスの前方宣言
 class Player;
+class GameScene;
 
 class Enemy {
 public:
@@ -17,7 +19,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, uint32_t textureHandle_);
+	void Initialize(Model* model, uint32_t textureHandle_, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -41,6 +43,8 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; }
 
+	bool IsDead() const { return isDead_; }
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
@@ -48,13 +52,18 @@ public:
 	void OnCollision();
 
 	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+	
+	
 
 public:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Utility* utility_ = nullptr;
+
+	// デスフラグ
+	bool isDead_ = false;
 
 	//発射間隔
 	static const int kFireInterval = 60;
@@ -72,9 +81,9 @@ public:
 	};
 
 	Phase phase_ = Phase::Approach;
-	
-	//弾
-	std::list<EnemyBullet*> bullets_;
+
+	GameScene* gameScene_ = nullptr;
+
 
 	//自キャラ
 	Player* player_ = nullptr;

@@ -2,7 +2,8 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include <player.h>
-
+#include "GameScene.h"
+#include "EnemyBullet.h"
 
 // 接近フェーズ更新関数
 void Enemy::PhaseApproach(const Vector3& v1, const Vector3& v2) {
@@ -22,12 +23,12 @@ void Enemy::PhaseApproach(const Vector3& v1, const Vector3& v2) {
 
 }
 
-void Enemy::OnCollision() {}
+void Enemy::OnCollision() { isDead_ = true; }
 
 // 弾の処理
 void Enemy::Fire() {
 	assert(player_);
-
+	assert(gameScene_);
 	// 弾の速度
 	const float kBulletSpeed = 1.0f;
 
@@ -42,7 +43,8 @@ void Enemy::Fire() {
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
-	bullets_.push_back(newBullet);
+	
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
 //接近フェーズ初期化
@@ -69,24 +71,21 @@ Vector3 Enemy::GetWorldPosition() {
 
 Enemy::~Enemy() {
 	delete utility_;
-	for (EnemyBullet* bullet : bullets_) {
-
-		delete bullet;
-	}
+	
 }
 
-void Enemy::Initialize(Model* model, uint32_t textureHandle) {
+void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& position) {
 	assert(model);
 	textureHandle_ = textureHandle;
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {10, 3, 0};
+	worldTransform_.translation_ = position;
 	velocityApproach = {0.0f, 0.0f, -0.0f};
 	velocityLeave = {-0.05f, 0.05f, -0.1f};
 	
 	//弾を発射
-	Fire();
+	//Fire();
 	//接近フェーズ初期化
 	approachInitialize();
 }
@@ -97,14 +96,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 /// </summary>
 void Enemy::Update() {
 
-	// デスフラグが立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+	
 
 	switch (phase_) {
 	case Enemy::Phase::Approach:
@@ -121,12 +113,6 @@ void Enemy::Update() {
 		
 	}
 
-	
-	
-	for (EnemyBullet* bullet : bullets_) {
-
-		bullet->Update();
-	}
 
 	worldTransform_.UpdateMatrix();
 
@@ -146,8 +132,5 @@ void Enemy::Update() {
 void Enemy::Draw(ViewProjection viewprojection) {
 	model_->Draw(worldTransform_, viewprojection, textureHandle_);
 
-	// 弾の描画
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewprojection);
-	}
+	
 };
