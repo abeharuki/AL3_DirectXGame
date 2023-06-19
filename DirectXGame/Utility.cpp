@@ -334,3 +334,51 @@ Matrix4x4 Utility::Inverse(const Matrix4x4& m) {
 
 	return Inverse;
 };
+
+// 減算
+Matrix4x4 Utility::Subract(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Matrix4x4 subract;
+	subract.m[0][0] = m1.m[0][0] - m2.m[0][0];
+	subract.m[0][1] = m1.m[0][1] - m2.m[0][1];
+	subract.m[0][2] = m1.m[0][2] - m2.m[0][2];
+	subract.m[0][3] = m1.m[0][3] - m2.m[0][3];
+	subract.m[1][0] = m1.m[1][0] - m2.m[1][0];
+	subract.m[1][1] = m1.m[1][1] - m2.m[1][1];
+	subract.m[1][2] = m1.m[1][2] - m2.m[1][2];
+	subract.m[1][3] = m1.m[1][3] - m2.m[1][3];
+	subract.m[2][0] = m1.m[2][0] - m2.m[2][0];
+	subract.m[2][1] = m1.m[2][1] - m2.m[2][1];
+	subract.m[2][2] = m1.m[2][2] - m2.m[2][2];
+	subract.m[2][3] = m1.m[2][3] - m2.m[2][3];
+	subract.m[3][0] = m1.m[3][0] - m2.m[3][0];
+	subract.m[3][1] = m1.m[3][1] - m2.m[3][1];
+	subract.m[3][2] = m1.m[3][2] - m2.m[3][2];
+	subract.m[3][3] = m1.m[3][3] - m2.m[3][3];
+	return subract;
+};
+
+// ビューポート行列
+Matrix4x4 Utility::MakeViewportMatrix(
+    float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 MakeViewportMatrix;
+	MakeViewportMatrix.m[0][0] = width / 2.0f;
+	MakeViewportMatrix.m[0][1] = 0.0f;
+	MakeViewportMatrix.m[0][2] = 0.0f;
+	MakeViewportMatrix.m[0][3] = 0.0f;
+
+	MakeViewportMatrix.m[1][0] = 0.0f;
+	MakeViewportMatrix.m[1][1] = -height / 2.0f;
+	MakeViewportMatrix.m[1][2] = 0.0f;
+	MakeViewportMatrix.m[1][3] = 0.0f;
+
+	MakeViewportMatrix.m[2][0] = 0.0f;
+	MakeViewportMatrix.m[2][1] = 0.0f;
+	MakeViewportMatrix.m[2][2] = maxDepth - minDepth;
+	MakeViewportMatrix.m[2][3] = 0.0f;
+	MakeViewportMatrix.m[3][0] = left + (width / 2.0f);
+
+	MakeViewportMatrix.m[3][1] = top + (height / 2.0f);
+	MakeViewportMatrix.m[3][2] = minDepth;
+	MakeViewportMatrix.m[3][3] = 1.0f;
+	return MakeViewportMatrix;
+}

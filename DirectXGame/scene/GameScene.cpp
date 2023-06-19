@@ -227,7 +227,9 @@ void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("jett.jpg");
+	//レティクル用テクスチャ
 	enemytextureHandle_ = TextureManager::Load("Brimstone.jpg");
+	TextureManager::Load("Reticle.png");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -238,12 +240,10 @@ void GameScene::Initialize() {
 	viewprojection_.Initialize();
 
 	player_ = new Player();
-	Vector3 playerPosition(0, 0, 50.0f);
+	Vector3 playerPosition{0, 0, 50.0f};
 	player_->Initialize(model_, textureHandle_,playerPosition);
 	
 	LoadEnemyPopData();
-	
-	
 	
 	
 	//天球
@@ -322,7 +322,7 @@ void GameScene::Update() {
 	}
 
 
-	player_->Update();
+	player_->Update(viewprojection_);
 
 	for (Enemy* enemy : enemys_) {
 
@@ -393,6 +393,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

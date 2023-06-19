@@ -44,6 +44,12 @@ public:
  //逆転行列
  Matrix4x4 Inverse(const Matrix4x4& m);
 
+ //減算
+ Matrix4x4 Subract(const Matrix4x4& m1, const Matrix4x4& m2);
+
+ // ビューポート行列
+ Matrix4x4 MakeViewportMatrix(
+	 float left, float top, float width, float height, float minDepth, float maxDepth);
 };
 	
 
