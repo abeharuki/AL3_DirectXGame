@@ -21,6 +21,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& pos
 	worldTransform_.translation_ = position;
 	worldTransform_.Initialize();
 	
+	//3Dレティクル用トランスフォーム初期化
+	worldTransform3DReticle_.Initialize();
+
 	input_ = Input::GetInstance();
 	
 }
@@ -109,6 +112,18 @@ void Player::Update() {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	}
 
+	//自機かあら3Dレティクルへの距離
+	const float kDistancePlayerTo3DReticle = 50.0f;
+	//自機から3Dレtぃ来るのオフセット(z+向き)
+	Vector3 offset = {0, 0, 1.0f};
+	offset = utility_->TransformNormal(offset, worldTransform_.matWorld_);
+	//ベクトルの長さを整える
+	offset = utility_->Multiply(kDistancePlayerTo3DReticle, utility_->Normalize(offset));
+	//3Dレティクルの座標を設定
+	worldTransform3DReticle_.translation_ = {
+	    worldTransform_.translation_.x, worldTransform_.translation_.y,worldTransform_.translation_.z + 1.0f};
+	worldTransform3DReticle_.UpdateMatrix();
+
 	Attack();
 
 	for (PlayerBullet* bullet : bullets_) {
@@ -152,5 +167,5 @@ void Player::Draw(ViewProjection viewprojection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewprojection);
 	}
-	
+	//model_->Draw(worldTransform_, viewprojection, textureHandle_);
 }

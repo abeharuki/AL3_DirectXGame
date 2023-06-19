@@ -48,6 +48,8 @@ public:
 
 private:
 	WorldTransform worldTransform_;
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
