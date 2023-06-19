@@ -241,7 +241,7 @@ void GameScene::Initialize() {
 	Vector3 playerPosition(0, 0, 50.0f);
 	player_->Initialize(model_, textureHandle_,playerPosition);
 	
-	//EnemyPopData(Vector3{10, 3, 0});
+	
 	LoadEnemyPopData();
 	
 	
@@ -271,7 +271,7 @@ void GameScene::Initialize() {
 
 
 void GameScene::Update() { 
-	//UpdateEnemyPopCommands();
+	UpdateEnemyPopCommands();
 	skydome_->Update();
 
 	debugCamera_->Update();
