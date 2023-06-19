@@ -23,8 +23,8 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotation) {
 /// </summary>
 void RailCamera::Update(){
 
-	const float kCameraSpeed = 0.001f;
-	velocity_.z += kCameraSpeed;
+	const float kCameraSpeed = 0.1f;
+	velocity_ = {0, 0, kCameraSpeed};
 	//worldTransform_.rotation_.y += kCameraSpeed; 
 	
 	//移動
@@ -41,11 +41,6 @@ void RailCamera::Update(){
 	
 	viewProjection_.matView = utility_->Inverse(worldTransform_.matWorld_);
 	
-
-
-	/*float cameraTranslation[3] = {
-	    worldTransform_.translation_.x, worldTransform_.translation_.y, viewProjection_.matView.m[3][2]};
-	*/
 
 	ImGui::Begin("Camera");
 	ImGui::SliderFloat("CameraTranslation", &worldTransform_.translation_.x, 0.0f, 10.0f);
