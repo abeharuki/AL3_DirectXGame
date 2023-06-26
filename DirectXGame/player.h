@@ -34,6 +34,7 @@ public:
 
 	void Attack();
 
+	void Reticle(const ViewProjection& viewProjection, const Vector2 pos);
 
 	// 3DReticleワールド座標を取得
 	Vector3 Get3DReticleWorldPosition();
