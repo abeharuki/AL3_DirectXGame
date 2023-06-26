@@ -5,8 +5,10 @@
 
 class Utility {
 public:
+
 	// 回転X
  Matrix4x4 MakeRotateXMatrix(float theta);
+
 	// Y
  Matrix4x4 MakeRotateYMatrix(float theta);
 
@@ -22,7 +24,9 @@ public:
 	// アフィン変換
  Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
+
  Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
  // 加算
  Vector3 Add(const Vector3& v1, const Vector3& v2);
 
