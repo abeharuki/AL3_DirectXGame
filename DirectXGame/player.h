@@ -71,6 +71,7 @@ private:
 	//数学関数
 	Utility* utility_ = nullptr;
 
+
 	//弾
 	std::list<PlayerBullet*> bullets_;
 };
