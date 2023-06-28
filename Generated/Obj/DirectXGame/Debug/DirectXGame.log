@@ -1,14 +1,4 @@
-﻿  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\TerrainPS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\TerrainVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ObjPS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ObjVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\PrimitivePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\PrimitiveVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ShapePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ShapeVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\SpritePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\SpriteVS.cso
-  ImGuiManager.cpp
+﻿  ImGuiManager.cpp
   DirectXCommon.cpp
   WinApp.cpp
   main.cpp
@@ -16,5 +6,5 @@
 C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\WinApp.cpp(3,10): fatal  error C1083: include ファイルを開けません。'imgui_impl_win32.h':No such file or directory
 C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\DirectXCommon.h(7,10): fatal  error C1083: include ファイルを開けません。'd3dx12.h':No such file or directory (ソース ファイルをコンパイルしています base\DirectXCommon.cpp)
 C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\DirectXCommon.h(7,10): fatal  error C1083: include ファイルを開けません。'd3dx12.h':No such file or directory (ソース ファイルをコンパイルしています 2d\ImGuiManager.cpp)
-C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\DirectXCommon.h(7,10): fatal  error C1083: include ファイルを開けません。'd3dx12.h':No such file or directory (ソース ファイルをコンパイルしています scene\GameScene.cpp)
 C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\DirectXCommon.h(7,10): fatal  error C1083: include ファイルを開けません。'd3dx12.h':No such file or directory (ソース ファイルをコンパイルしています main.cpp)
+C:\授業前期2年\AL3\KamataEngine\DirectXGame\base\DirectXCommon.h(7,10): fatal  error C1083: include ファイルを開けません。'd3dx12.h':No such file or directory (ソース ファイルをコンパイルしています scene\GameScene.cpp)
