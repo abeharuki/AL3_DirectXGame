@@ -22,13 +22,15 @@
 namespace {
 
 std::wstring GetResourceRoot() {
-	static const std::wstring kResourceRoot = L"./NoviceResources/";
-	return kResourceRoot;
+	static const std::wstring kResourceRoot = L"C:/KamataEngine/DirectXGame/Resources/";
+	DWORD dwAttrib = GetFileAttributes(kResourceRoot.c_str());
+	return dwAttrib != INVALID_FILE_ATTRIBUTES ? kResourceRoot : L"./";
 }
 
 std::string GetResourceRootChar() {
-	static const std::string kResourceRootChar = "./NoviceResources/";
-	return kResourceRootChar;
+	static const std::string kResourceRootChar = "C:/KamataEngine/DirectXGame/Resources/";
+	DWORD dwAttrib = GetFileAttributesA(kResourceRootChar.c_str());
+	return dwAttrib != INVALID_FILE_ATTRIBUTES ? kResourceRootChar : "./";
 }
 
 const WORD kXInputButtons[] = {
