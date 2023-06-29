@@ -8,6 +8,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "Player.h"
+#include <memory>
 
 /// <summary>
 /// ゲームシーン
@@ -48,4 +50,15 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+	// 3Dモデル
+	std::unique_ptr<Model> model_;
+	// ビュープロジェクション
+	ViewProjection viewprojection_;
+
+	// 自キャラ
+	std::unique_ptr<Player> player_;
+
 };

@@ -11,6 +11,18 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+		// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("white1x1.png");
+	// 3Dモデルの生成
+	model_.reset(Model::Create());
+
+	// ビュープロジェクションの初期化
+	viewprojection_.Initialize();
+
+	//自キャラの生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize(model_.get(), textureHandle_);
 }
 
 void GameScene::Update() {}
@@ -41,6 +53,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	player_->Draw(viewprojection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
