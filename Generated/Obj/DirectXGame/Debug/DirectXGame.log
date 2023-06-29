@@ -1,16 +1,16 @@
-﻿  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\TerrainPS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\TerrainVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\ObjPS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\ObjVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\PrimitivePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\PrimitiveVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\ShapePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\ShapeVS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\SpritePS.cso
-  compilation object save succeeded; see C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\SpriteVS.cso
+﻿  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\TerrainPS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\TerrainVS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ObjPS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ObjVS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\PrimitivePS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\PrimitiveVS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ShapePS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\ShapeVS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\SpritePS.cso
+  compilation object save succeeded; see C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\SpriteVS.cso
   ImGuiManager.cpp
   DirectXCommon.cpp
   WinApp.cpp
   main.cpp
   GameScene.cpp
-  DirectXGame.vcxproj -> C:\授業前期2年\AL3\AL3_DirectXGame\Generated\Outputs\Debug\DirectXGame.exe
+  DirectXGame.vcxproj -> C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\DirectXGame.exe
