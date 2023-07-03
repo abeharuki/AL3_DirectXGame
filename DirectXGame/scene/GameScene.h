@@ -48,34 +48,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void CheckAllCollision();
-
-	/// <summary>
-	/// 敵弾の追加
-	/// </summary>
-	void AddEnemyBullet(EnemyBullet* enemyBullet);
-
-	// 敵発生コマンド
-	std::stringstream enemyPopCommands;
-
-	/// <summary>
-	/// 敵発生
-	/// </summary>
-	void EnemyPopData(const Vector3& position);
-
-	/// <summary>
-	/// 敵発生データの読み込み
-	/// </summary>
-	void LoadEnemyPopData();
-
-	/// <summary>
-	/// 敵発生コマンドの更新
-	/// </summary>
-	void UpdateEnemyPopCommands();
-
+	
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -104,10 +77,8 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 
 	//敵
-	//Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemys_;
-	// 敵弾
-	std::list<EnemyBullet*> enemyBullets_;
+	// 敵
+	Enemy* enemy_ = nullptr;
 
 	//天球
 	Skydome* skydome_ = nullptr;
