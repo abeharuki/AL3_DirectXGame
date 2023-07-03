@@ -23,7 +23,7 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotation) {
 /// </summary>
 void RailCamera::Update(){
 
-	const float kCameraSpeed = 0.1f;
+	const float kCameraSpeed = 0.0f;
 	velocity_ = {0, 0, kCameraSpeed};
 	//worldTransform_.rotation_.y += kCameraSpeed; 
 	

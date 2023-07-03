@@ -23,9 +23,11 @@ public:
 	/// </summary>
 	void Draw(ViewProjection viewprojection);
 
-	void PhaseApproach(const Vector3& v1, const Vector3& v2);
+	void PhaseApproach();
 
-	void PhaseLeave(const Vector3& v1, const Vector3& v2);
+	void PhaseLeave();
+
+	
 
 private:
 	WorldTransform worldTransform_;
@@ -35,11 +37,16 @@ private:
 	Vector3 velocityApproach = {0, 0, 0};
 	Vector3 velocityLeave = {0, 0, 0};
 
+	
 	enum class Phase {
 		Approach, // 接近する
 		Leave,    // 離脱する
 
 	};
 
+	static void (Enemy::*spFuncTable[])();
+	//spFuncTable[0] = &Enemy::PhaseApproach;
+	
 	Phase phase_ = Phase::Approach;
+	
 };
