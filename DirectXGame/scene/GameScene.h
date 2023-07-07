@@ -10,6 +10,9 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include <memory>
+#include "Skydome.h"
+#include "Ground.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -61,4 +64,14 @@ private: // メンバ変数
 	// 自キャラ
 	std::unique_ptr<Player> player_;
 
+	// 天球
+	std::unique_ptr<Skydome> skydome_;
+	// 天球3Dモデル
+	std::unique_ptr<Model> modelSkydome_;
+
+	/*/地面
+	std::unique_ptr<Ground> ground_;
+	//地面3Dモデル
+	std::unique_ptr<Model> modelGround_;
+	*/
 };
