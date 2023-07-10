@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include <d3d12.h>
 #include <wrl.h>
+#include "Utility.h"
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
@@ -30,6 +31,8 @@ struct WorldTransform {
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 	
+	// 数学関数
+	Utility* utility_ = nullptr;
 
 	/// <summary>
 	/// デストラクタ
@@ -55,21 +58,5 @@ struct WorldTransform {
 
 	void UpdateMatrix();
 
-		// 回転X
-	Matrix4x4 MakeRotateXMatrix(float theta);
-	// Y
-	Matrix4x4 MakeRotateYMatrix(float theta);
-
-	// Z
-	Matrix4x4 MakeRotateZMatrix(float theta);
-
-	// スカラー倍
-	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-
-	// アフィン変換
-	Matrix4x4
-	    MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-
-	
 	
 };

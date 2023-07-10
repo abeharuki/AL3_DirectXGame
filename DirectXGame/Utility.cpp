@@ -1,6 +1,8 @@
 #include "Utility.h"
 
-/*/ 回転X
+
+
+// 回転X
 Matrix4x4 Utility::MakeRotateXMatrix(float theta = 0) {
 	Matrix4x4 MakeRotateMatrix;
 	MakeRotateMatrix.m[0][0] = 1;
@@ -330,5 +332,5 @@ Matrix4x4 Utility::Inverse(const Matrix4x4& m) {
 	                  B;
 
 	return Inverse;
-	
-};*/
+
+};

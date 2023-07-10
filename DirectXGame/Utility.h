@@ -1,14 +1,13 @@
 #pragma once
-#include "ImGuiManager.h"
-#include "WorldTransform.h"
+#include <Matrix4x4.h>
+#include <Vector3.h>
 #include <cassert>
-#define _USE_MATH_DEFINES
 #include <math.h>
 #include <assert.h>
 
 class Utility {
 public:
-	/*/ 回転X
+	// 回転X
 	Matrix4x4 MakeRotateXMatrix(float theta);
 	// Y
 	Matrix4x4 MakeRotateYMatrix(float theta);
@@ -26,6 +25,7 @@ public:
 	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3&translate);
 
 	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
 	// 加算
 	Vector3 Add(const Vector3& v1, const Vector3& v2);
 
@@ -42,9 +42,9 @@ public:
 	Vector3 Normalize(const Vector3& v);
 
 	//
-	Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
+	Vector3 TransformNormal (const Vector3& vector, const Matrix4x4& matrix);
 
 	// 逆転行列
 	Matrix4x4 Inverse(const Matrix4x4& m);
-	*/
+	
 };

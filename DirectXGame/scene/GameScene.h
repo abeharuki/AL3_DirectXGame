@@ -12,6 +12,7 @@
 #include <memory>
 #include "Skydome.h"
 #include "Ground.h"
+#include <DebugCamera.h>
 
 
 /// <summary>
@@ -56,22 +57,33 @@ private: // メンバ変数
 	
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-	// 3Dモデル
-	std::unique_ptr<Model> model_;
+	
 	// ビュープロジェクション
 	ViewProjection viewprojection_;
 
+	// デバックカメラ有効
+	bool isDebugCameraActve_ = false;
+	// デバックカメラ
+	std::unique_ptr<DebugCamera> debugCamera_;
+
+
 	// 自キャラ
 	std::unique_ptr<Player> player_;
+	// 自キャラ3Dモデル
+	std::unique_ptr<Model> modelBody_;
+	std::unique_ptr<Model> modelHead_;
+	std::unique_ptr<Model> modelLarm_;
+	std::unique_ptr<Model> modelRarm_;
+
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;
 	// 天球3Dモデル
 	std::unique_ptr<Model> modelSkydome_;
 
-	/*/地面
+	//地面
 	std::unique_ptr<Ground> ground_;
 	//地面3Dモデル
 	std::unique_ptr<Model> modelGround_;
-	*/
+	
 };

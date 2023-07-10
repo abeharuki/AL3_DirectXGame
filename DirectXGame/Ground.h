@@ -7,8 +7,7 @@
 
 class  Ground {
 public:
-	 Ground();
-	~Ground();
+	
 	 /// <summary>
 	 /// 初期化
 	 /// </summary>
