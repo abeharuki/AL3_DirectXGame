@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <imgui.h>
+#include "Utility.h"
 
 class Player {
 public:
@@ -14,11 +15,20 @@ public:
 
 	void Draw(ViewProjection viewprojection);
 
+    const WorldTransform& GetWorldTransform() { return worldTransformB_; }
+
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	}
+
 private:
 	WorldTransform worldTransformB_;
 	WorldTransform worldTransformH_;
 	WorldTransform worldTransformL_;
 	WorldTransform worldTransformR_;
+	//カメラのビュープロジェクション
+	const ViewProjection* viewProjection_ = nullptr;
+
 	Model* modelBody_ = nullptr;
 	Model* modelHead_ = nullptr;
 	Model* modelLarm_ = nullptr;

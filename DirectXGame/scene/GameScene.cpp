@@ -19,7 +19,6 @@ void GameScene::Initialize() {
 	
 
 	// ビュープロジェクションの初期化
-	viewprojection_.farZ = 1000.0f;
 	viewprojection_.Initialize();
 
 	Vector3 playerPos{0, 0, 0.0f};
@@ -36,6 +35,14 @@ void GameScene::Initialize() {
 	player_->Initialize(modelBody_.get(), modelHead_.get(), modelLarm_.get(),
 		modelRarm_.get(), playerPos);
 
+	// レールカメラ
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	// 自キャラのワールドトランスフォームを追従カメラにセット
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+
+	//自キャラの生成と初期化処理
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 
 	//天球
 	skydome_ = std::make_unique<Skydome>();
@@ -49,8 +56,7 @@ void GameScene::Initialize() {
 	modelGround_.reset(Model::CreateFromOBJ("ground", true));
 	ground_->Initialize(modelGround_.get());
 	
-
-
+	
 	// デバックカメラの生成
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 
@@ -61,10 +67,22 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
-
 	skydome_->Update();
 	ground_->Update();
+	
+	
+		// 追従カメラの更新
+		followCamera_->Update();
+		viewprojection_.matView = followCamera_->GetViewProjection().matView;
+		viewprojection_.matProjection = followCamera_->GetViewProjection().matProjection;
+
+		viewprojection_.TransferMatrix();
+	
+
+	
 	player_->Update();
+
+	
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_1)) {

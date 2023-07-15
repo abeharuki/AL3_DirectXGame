@@ -13,7 +13,7 @@
 #include "Skydome.h"
 #include "Ground.h"
 #include <DebugCamera.h>
-
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -86,4 +86,6 @@ private: // メンバ変数
 	//地面3Dモデル
 	std::unique_ptr<Model> modelGround_;
 	
+	//レールカメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 };

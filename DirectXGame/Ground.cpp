@@ -12,7 +12,7 @@ void Ground::Initialize(Model* model) {
 /// </summary>
 void Ground::Update() {
 
-	worldTransform_.scale_ = {500, 500, 500};
+	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.UpdateMatrix();
 };
 
