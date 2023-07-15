@@ -4,61 +4,6 @@
 #include <iostream>
 
 
-void Player::InitializeFloatingGimmick() {
-	floatingParameter_ = 0.0f;
-
-	// 浮遊移動サイクル
-	cycle = 60;
-	Pi = 3.1415f;
-	// 浮遊の振幅
-	amplitude = 0.2f;
-	amplitudeArm = 0.4f;
-}
-
-void Player::UpdateFloatingGimmick() {
-	// 1フレームでのパラメータ加算値
-	const float steppe = 2.0f * Pi / cycle;
-
-	// パラメータを1分加算
-	floatingParameter_ += steppe;
-	// 2πを超えたら0に戻す
-	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * Pi);
-
-	
-	
-	// 体
-	worldTransformB_.translation_ = worldTransformBase_.translation_;
-	// 頭
-	worldTransformH_.translation_ = worldTransformBase_.translation_;
-	// 左手
-	worldTransformL_.translation_ = worldTransformBase_.translation_;
-	// 右手
-	worldTransformR_.translation_ = worldTransformBase_.translation_;
-
-
-	// 浮遊を座標に反映
-	worldTransformB_.translation_.y = std::sin(floatingParameter_) * amplitude;
-	worldTransformH_.translation_.y = (std::sin(floatingParameter_) * amplitude) + 1.5f;
-	worldTransformL_.translation_.y = (std::sin(floatingParameter_) * amplitude) + 1.3f;
-	worldTransformR_.translation_.y = (std::sin(floatingParameter_) * amplitude) + 1.3f;
-
-	worldTransformL_.translation_.x = worldTransformBase_.translation_.x - 0.5f;
-	worldTransformR_.translation_.x = worldTransformBase_.translation_.x + 0.5f;
-
-	worldTransformL_.rotation_.x = worldTransformL_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
-	worldTransformR_.rotation_.x = worldTransformR_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
-
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &worldTransformH_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat("cycle", &cycle, 1.0f, 120.0f);
-	ImGui::SliderFloat("amplitude", &amplitude, 0.0f, 3.0f);
-	ImGui::SliderFloat(" amplitudeArm", &amplitudeArm, 0.0f, 3.0f);
-	ImGui::End();
-}
-
-
 
 void Player::Initialize(Model* modelBody, Model* modelHead,
 	Model* modelLarm, Model* modelRarm) {
@@ -88,8 +33,7 @@ void Player::Initialize(Model* modelBody, Model* modelHead,
 	worldTransformL_.parent_ = worldTransformBase_.parent_;
 	worldTransformR_.parent_ = worldTransformBase_.parent_;
 
-	//浮遊ギミックの初期化
-	InitializeFloatingGimmick();
+	
 }
 
 void Player::Update() { 
@@ -191,8 +135,7 @@ void Player::Update() {
 	*/
 
 	
-	// 浮遊ギミックの更新
-	UpdateFloatingGimmick();
+
 
 
 	worldTransformBase_.UpdateMatrix();
