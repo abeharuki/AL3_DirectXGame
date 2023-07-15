@@ -114,28 +114,30 @@ void Player::Update() {
 	worldTransformB_.translation_ = utility_->Add(worldTransformB_.translation_, move);
 	
 
-	//頭
-	worldTransformH_.translation_.x = worldTransformB_.matWorld_.m[3][0];
-	worldTransformH_.translation_.y = worldTransformB_.matWorld_.m[3][1] + 1.5f;
-	worldTransformH_.translation_.z = worldTransformB_.matWorld_.m[3][2];
-
-	//左手
-	worldTransformL_.translation_.x = worldTransformB_.matWorld_.m[3][0] - 0.5f;
-	worldTransformL_.translation_.y = worldTransformB_.matWorld_.m[3][1] + 1.3f;
-	worldTransformL_.translation_.z = worldTransformB_.matWorld_.m[3][2];
-
-	// 右手
-	worldTransformR_.translation_.x = worldTransformB_.matWorld_.m[3][0] + 0.5f;
-	worldTransformR_.translation_.y = worldTransformB_.matWorld_.m[3][1] + 1.3f;
-	worldTransformR_.translation_.z = worldTransformB_.matWorld_.m[3][2];
-
+	
 
 	
 
 	*/
 
+	worldTransformB_.translation_.x = worldTransformBase_.matWorld_.m[3][0];
+	worldTransformB_.translation_.y = worldTransformBase_.matWorld_.m[3][1];
+	worldTransformB_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
 	
+	// 頭
+	worldTransformH_.translation_.x = worldTransformBase_.matWorld_.m[3][0];
+	worldTransformH_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.5f;
+	worldTransformH_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
 
+	// 左手
+	worldTransformL_.translation_.x = worldTransformBase_.matWorld_.m[3][0] - 0.5f;
+	worldTransformL_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.3f;
+	worldTransformL_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
+
+	// 右手
+	worldTransformR_.translation_.x = worldTransformBase_.matWorld_.m[3][0] + 0.5f;
+	worldTransformR_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.3f;
+	worldTransformR_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
 
 
 	worldTransformBase_.UpdateMatrix();
