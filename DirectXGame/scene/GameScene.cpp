@@ -21,7 +21,7 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewprojection_.Initialize();
 
-	Vector3 playerPos{0, 0, 0.0f};
+	
 	//自キャラの生成
 	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
@@ -33,7 +33,7 @@ void GameScene::Initialize() {
 	modelLarm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelRarm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 	player_->Initialize(modelBody_.get(), modelHead_.get(), modelLarm_.get(),
-		modelRarm_.get(), playerPos);
+		modelRarm_.get());
 
 	// レールカメラ
 	followCamera_ = std::make_unique<FollowCamera>();
