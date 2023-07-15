@@ -15,17 +15,8 @@ public:
 
 	void Draw(ViewProjection viewprojection);
 
-    const WorldTransform& GetWorldTransform() { return worldTransformBase_; }
 
-	void SetViewProjection(const ViewProjection* viewProjection) {
-		viewProjection_ = viewProjection;
-	}
-
-	//浮遊ギミック初期化
-	void InitializeFloatingGimmick();
 	
-	//浮遊ギミックの更新
-	void UpdateFloatingGimmick();
 
 private:
 	WorldTransform worldTransformBase_;

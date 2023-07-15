@@ -35,14 +35,7 @@ void GameScene::Initialize() {
 	player_->Initialize(modelBody_.get(), modelHead_.get(), modelLarm_.get(),
 		modelRarm_.get());
 
-	// レールカメラ
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	// 自キャラのワールドトランスフォームを追従カメラにセット
-	followCamera_->SetTarget(&player_->GetWorldTransform());
-
-	//自キャラの生成と初期化処理
-	player_->SetViewProjection(&followCamera_->GetViewProjection());
+	
 
 	//天球
 	skydome_ = std::make_unique<Skydome>();
@@ -71,14 +64,6 @@ void GameScene::Update() {
 	ground_->Update();
 	
 	
-		// 追従カメラの更新
-		followCamera_->Update();
-		viewprojection_.matView = followCamera_->GetViewProjection().matView;
-		viewprojection_.matProjection = followCamera_->GetViewProjection().matProjection;
-
-		viewprojection_.TransferMatrix();
-	
-
 	
 	player_->Update();
 
