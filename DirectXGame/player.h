@@ -4,16 +4,16 @@
 #include "WorldTransform.h"
 #include <imgui.h>
 #include "Utility.h"
+#include "BaseCharacter.h"
 
-class Player {
+class Player : public BaseCharacter{
 public:
 	
-	void Initialize(Model* modelBody, Model* modelHead, 
-		Model* modelLarm, Model* modelRarm);
+	void Initialize(const std::vector<Model*>& models) override;
 
-	void Update();
+	void Update() override;
 
-	void Draw(ViewProjection viewprojection);
+	void Draw(const ViewProjection& viewprojection) override;
 
     const WorldTransform& GetWorldTransform() { return worldTransformBase_; }
 
@@ -37,10 +37,10 @@ private:
 	const ViewProjection* viewProjection_ = nullptr;
 
 	//3Dモデル
-	Model* modelBody_ = nullptr;
-	Model* modelHead_ = nullptr;
-	Model* modelLarm_ = nullptr;
-	Model* modelRarm_ = nullptr;
+	int modelBody_ = 0;
+	int modelHead_ = 1;
+	int modelLarm_ = 2;
+	int modelRarm_ = 3;
 
 	Input* input_ = nullptr;
 
@@ -56,5 +56,6 @@ private:
 
 	// 数学関数
 	std::unique_ptr<Utility> utility_;
+	
 	
 };

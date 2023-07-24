@@ -11,7 +11,6 @@ void Ground::Initialize(Model* model) {
 /// 毎フレーム処理
 /// </summary>
 void Ground::Update() {
-
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.UpdateMatrix();
 };

@@ -11,11 +11,9 @@ void FollowCamera::Initialize() {
 
 void FollowCamera::Update() {
 
-	// ゲームパッドの状態を得る変数(XINPUT)
+	/*/ ゲームパッドの状態を得る変数(XINPUT)
 	XINPUT_STATE joyState;
 
-	// 回転速度
-	//float kCharacterSpeed = 0.1f;
 	
 	// ジョイスティックの状態取得
 	if (input_->GetInstance()->GetJoystickState(0, joyState)) {
@@ -25,15 +23,19 @@ void FollowCamera::Update() {
 
 		viewProjection_.rotation_.y += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * kCharacterSpeed;
 	}
+	*/
 
-	/*/ 左右移動
+
+	// 回転速度
+	float kCharacterSpeed = 0.0f;
+	// 左右移動
 	if (input_->PushKey(DIK_LEFTARROW)) {
 		kCharacterSpeed = -0.1f;
 	} else if (input_->PushKey(DIK_RIGHTARROW)) {
 		kCharacterSpeed = 0.1f;
 	}
-	*/
 	
+	viewProjection_.rotation_.y += kCharacterSpeed;
 
 
 	//追従対象がいれば

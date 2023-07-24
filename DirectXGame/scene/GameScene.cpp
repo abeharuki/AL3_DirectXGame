@@ -17,10 +17,10 @@ void GameScene::Initialize() {
 	// ファイル名を指定してテクスチャを読み込む
 	//textureHandle_ = TextureManager::Load("white1x1.png");
 	
-
+	viewprojection_.farZ = 500;
 	// ビュープロジェクションの初期化
 	viewprojection_.Initialize();
-
+	
 	
 	//自キャラの生成
 	player_ = std::make_unique<Player>();
@@ -32,8 +32,12 @@ void GameScene::Initialize() {
 	//両手
 	modelLarm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelRarm_.reset(Model::CreateFromOBJ("float_R_arm", true));
-	player_->Initialize(modelBody_.get(), modelHead_.get(), modelLarm_.get(),
-		modelRarm_.get());
+	//自キャラモデル
+	std::vector<Model*> playerModels = {
+	    modelBody_.get(), modelHead_.get(), 
+		modelLarm_.get(), modelRarm_.get()};
+	//自キャラの初期化
+	player_->Initialize(playerModels);
 
 	// レールカメラ
 	followCamera_ = std::make_unique<FollowCamera>();
@@ -43,6 +47,16 @@ void GameScene::Initialize() {
 
 	//自キャラの生成と初期化処理
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
+
+	//敵キャラの生成
+	enemy_ = std::make_unique<Enemy>();
+	// 3Dモデルの生成
+	enemyModel_.reset(Model::CreateFromOBJ("needle_Body", true));
+	// 敵キャラモデル
+	std::vector<Model*> enemyModels = {enemyModel_.get()};
+	// 敵キャラの初期化
+	enemy_->Initialize(enemyModels);
+
 
 	//天球
 	skydome_ = std::make_unique<Skydome>();
@@ -81,7 +95,7 @@ void GameScene::Update() {
 
 	
 	player_->Update();
-
+	enemy_->Update();
 	
 
 #ifdef _DEBUG
@@ -129,6 +143,9 @@ void GameScene::Draw() {
 	/// </summary>
 	//プレーヤー
 	player_->Draw(viewprojection_);
+
+	//敵
+	enemy_->Draw(viewprojection_);
 
 	//天球
 	skydome_->Draw(viewprojection_);

@@ -4,18 +4,20 @@
 
 class BaseCharacter {
 
+public:
 	virtual void Initialize(const std::vector<Model*>& models);
 
 	virtual void Update();
 
 	virtual void Draw(const ViewProjection& viewprojection);
 
-
+	const WorldTransform& GetWorldTransform() { return worldtransform_;
+	}
 
 protected:
-	//ƒ‚ƒfƒ‹”z—ñƒf[ƒ^
+	//ãƒ¢ãƒ‡ãƒ«é…åˆ—ãƒ‡ãƒ¼ã‚¿
 	std::vector<Model*> models_;
-	//ƒ[ƒ‹ƒh•ÏŠ·ƒf[ƒ^
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ãƒ‡ãƒ¼ã‚¿
 	WorldTransform worldtransform_;
 
 };
