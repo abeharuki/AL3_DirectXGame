@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include "Utility.h"
 #include "BaseCharacter.h"
+#include <optional>
 
 class Player : public BaseCharacter{
 public:
@@ -26,6 +27,22 @@ public:
 	
 	//浮遊ギミックの更新
 	void UpdateFloatingGimmick();
+	
+	//行動初期化
+	void BehaviorRootInitialize();
+
+	//攻撃初期化
+	void BehaviorAttackInitialize();
+
+	//行動
+	void BehaviorRootUpdata();
+
+	//攻撃
+	void BehaviorAttackUpdata();
+
+	//パーツ親子関係
+	void Relationship();
+
 
 private:
 	WorldTransform worldTransformBase_;
@@ -33,6 +50,7 @@ private:
 	WorldTransform worldTransformH_;
 	WorldTransform worldTransformL_;
 	WorldTransform worldTransformR_;
+	WorldTransform worldTransformW_;
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
@@ -41,6 +59,7 @@ private:
 	int modelHead_ = 1;
 	int modelLarm_ = 2;
 	int modelRarm_ = 3;
+	int modelWeapon_ = 4;
 
 	Input* input_ = nullptr;
 
@@ -54,8 +73,23 @@ private:
 	//円周率
 	float Pi = 0.0f;
 
+	//攻撃フラグ
+	bool attack = false;
+	float attackkSpeed = 0.1f;
+	float attackTime = 0.0f;
+	float changeTime = 0.0f;
+
 	// 数学関数
 	std::unique_ptr<Utility> utility_;
 	
-	
+	//振る舞い
+	enum class Behavior {
+		kRoot,//通常状態
+		kAttack,//攻撃中
+	};
+
+	Behavior behavior_ = Behavior::kRoot;
+	//次の振る舞いリクエスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
 };

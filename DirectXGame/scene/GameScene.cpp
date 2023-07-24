@@ -32,10 +32,12 @@ void GameScene::Initialize() {
 	//両手
 	modelLarm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelRarm_.reset(Model::CreateFromOBJ("float_R_arm", true));
+	//武器
+	modelHammer_.reset(Model::CreateFromOBJ("hammer", true));
 	//自キャラモデル
 	std::vector<Model*> playerModels = {
 	    modelBody_.get(), modelHead_.get(), 
-		modelLarm_.get(), modelRarm_.get()};
+		modelLarm_.get(), modelRarm_.get(), modelHammer_.get()};
 	//自キャラの初期化
 	player_->Initialize(playerModels);
 

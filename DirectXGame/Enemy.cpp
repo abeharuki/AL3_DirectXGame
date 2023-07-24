@@ -50,7 +50,7 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 }
 
 void Enemy::Update() { 
-	BaseCharacter::Update(); 
+	BaseCharacter::Update();
 
 	const float kCharacterSpeed = 0.3f;
 	Vector3 move = {0.0f, 0.0f, kCharacterSpeed};

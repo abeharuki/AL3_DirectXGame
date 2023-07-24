@@ -75,11 +75,14 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelHead_;
 	std::unique_ptr<Model> modelLarm_;
 	std::unique_ptr<Model> modelRarm_;
+	//武器
+	std::unique_ptr<Model> modelHammer_;
 
 	//敵キャラ
 	std::unique_ptr<Enemy> enemy_;
 	// 敵キャラ3Dモデル
 	std::unique_ptr<Model> enemyBody_;
+	//武器
 	std::unique_ptr<Model> enemyWeapon_;
 
 	// 天球
