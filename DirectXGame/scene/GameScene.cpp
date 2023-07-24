@@ -51,9 +51,10 @@ void GameScene::Initialize() {
 	//敵キャラの生成
 	enemy_ = std::make_unique<Enemy>();
 	// 3Dモデルの生成
-	enemyModel_.reset(Model::CreateFromOBJ("needle_Body", true));
+	enemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
+	enemyWeapon_.reset(Model::CreateFromOBJ("needle_Weapon", true));
 	// 敵キャラモデル
-	std::vector<Model*> enemyModels = {enemyModel_.get()};
+	std::vector<Model*> enemyModels = {enemyBody_.get(), enemyWeapon_.get(), enemyWeapon_.get()};
 	// 敵キャラの初期化
 	enemy_->Initialize(enemyModels);
 
@@ -85,12 +86,12 @@ void GameScene::Update() {
 	ground_->Update();
 	
 	
-		// 追従カメラの更新
-		followCamera_->Update();
-		viewprojection_.matView = followCamera_->GetViewProjection().matView;
-		viewprojection_.matProjection = followCamera_->GetViewProjection().matProjection;
+	// 追従カメラの更新
+	followCamera_->Update();
+	viewprojection_.matView = followCamera_->GetViewProjection().matView;
+	viewprojection_.matProjection = followCamera_->GetViewProjection().matProjection;
 
-		viewprojection_.TransferMatrix();
+	viewprojection_.TransferMatrix();
 	
 
 	

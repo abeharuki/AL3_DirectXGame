@@ -79,7 +79,8 @@ private: // メンバ変数
 	//敵キャラ
 	std::unique_ptr<Enemy> enemy_;
 	// 敵キャラ3Dモデル
-	std::unique_ptr<Model> enemyModel_;
+	std::unique_ptr<Model> enemyBody_;
+	std::unique_ptr<Model> enemyWeapon_;
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;

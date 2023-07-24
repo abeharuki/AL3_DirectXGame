@@ -43,7 +43,7 @@ void Player::UpdateFloatingGimmick() {
 	    utility_->MakeAffineMatrix(
 	        worldTransformR_.scale_, worldTransformR_.rotation_, worldTransformR_.translation_),
 	    worldTransformB_.matWorld_);
-	worldTransformBase_.UpdateMatrix();
+	
 
 	// 浮遊を座標に反映
 	worldTransformB_.translation_.y = std::sin(floatingParameter_) * amplitude;
@@ -167,7 +167,6 @@ void Player::Update() {
 	}
 	
 	// 
-
 	Matrix4x4 rotateMatrix = utility_->Multiply(
 	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
 	    utility_->Multiply(
@@ -188,7 +187,7 @@ void Player::Update() {
 	UpdateFloatingGimmick();
 
 	
-
+	worldTransformBase_.UpdateMatrix();
 	worldTransformB_.TransferMatrix();
 	worldTransformH_.TransferMatrix();
 	worldTransformL_.TransferMatrix();
