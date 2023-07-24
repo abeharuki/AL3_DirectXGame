@@ -2,7 +2,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include <iostream>
-
+#include "GlobalVariables.h"
 
 void Player::InitializeFloatingGimmick() {
 	floatingParameter_ = 0.0f;
@@ -233,7 +233,12 @@ void Player::Relationship() {
 }
 
 void Player::Initialize(const std::vector<Model*>& models) {
-	
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	//グループを追加
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+	globalVariables->SetValue(groupName, "Test", 90);
+
 	//基底クラスの初期化
 	BaseCharacter::Initialize(models);
 
@@ -249,16 +254,8 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_.Initialize();
 	worldTransformW_.Initialize();
 
-	// 位置の調整
-	// 頭
-	worldTransformH_.translation_.y = 1.5f;
-	// 腕
-	worldTransformL_.translation_.x = -0.5f;
-	worldTransformR_.translation_.x = 0.5f;
-	worldTransformL_.translation_.y = 1.3f;
-	worldTransformR_.translation_.y = 1.3f;
-
 	
+	behaviorRequest_ = Behavior::kRoot;
 
 	//浮遊ギミックの初期化
 	InitializeFloatingGimmick();
