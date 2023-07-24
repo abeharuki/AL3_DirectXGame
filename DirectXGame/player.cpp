@@ -263,6 +263,8 @@ void Player::Initialize(const std::vector<Model*>& models) {
 
 void Player::Update() { 
 
+	
+
 	if (behaviorRequest_) {
 		// 振る舞い変更
 		behavior_ = behaviorRequest_.value();

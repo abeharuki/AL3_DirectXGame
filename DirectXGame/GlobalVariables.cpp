@@ -1,5 +1,9 @@
 #include "GlobalVariables.h"
 #include "ImGuiManager.h"
+#include <json.hpp>
+#include <iostream>
+#include <fstream>
+
 
 GlobalVariables* GlobalVariables::GetInstance() {
 	static GlobalVariables globalVariables_;
@@ -47,7 +51,7 @@ void GlobalVariables::SetValue(const std::string& grouName, const std::string& k
 }
 
 void GlobalVariables::Updeat() { 
-	if (!ImGui::Begin("Global Variadles", nullptr, ImGuiWindowFlags_MenuBar)) {
+	if (!ImGui::Begin("Global Variadles", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -90,7 +94,13 @@ void GlobalVariables::Updeat() {
 			}
 		}
 
+		ImGui::Text("\n");
 
+		if (ImGui::Button("Save")) {
+			SaveFile(groupName);
+			std::string message = std::format("{}.json save.", groupName);
+			MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+		}
 
 		ImGui::EndMenu();
 	}
@@ -98,4 +108,76 @@ void GlobalVariables::Updeat() {
 
 	ImGui::EndMenuBar();
 	ImGui::End();
+}
+
+void GlobalVariables::SaveFile(const std::string& groupName) {
+	//グループを検索
+	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
+
+	//未登録チェック
+	assert(itGroup != datas_.end());
+	
+	nlohmann::json root;
+
+	root = nlohmann::json::object();
+
+	//jsonオブジェクト登録
+	root[groupName] = nlohmann::json::object();
+
+	// 各項目について
+	for (std::map<std::string, Item>::iterator itItem = itGroup->second.items.begin();
+	     itItem != itGroup->second.items.end(); ++itItem) {
+
+		// 項目名を取得
+		const std::string& itemName = itItem->first;
+		// 項目の参照を取得
+		Item& item = itItem->second;
+
+		// int32_t型の値を保持していれば
+		if (std::holds_alternative<int32_t>(item.value)) {
+			//int32_t型の値を登録
+			root[groupName][itemName] = std::get<int32_t>(item.value);
+		}
+		// float型の値を保持していれば
+		else if (std::holds_alternative<float>(item.value)) {
+			// float型の値を登録
+			root[groupName][itemName] = std::get<float>(item.value);
+		}
+		// Vector3型の値を保持していれば
+		else if (std::holds_alternative<Vector3>(item.value)) {
+			//float型のjson配列登録
+			Vector3 value = std::get<Vector3>(item.value);
+			// Vector3型の値を登録
+			root[groupName][itemName] = nlohmann::json::array({value.x, value.y, value.z});
+		}
+
+		// ディレクトがなければ作成する
+		std::filesystem::path dir(kDirectoryPath);
+		if (!std::filesystem::exists(kDirectoryPath)) {
+			std::filesystem::create_directory(kDirectoryPath);
+		}
+
+		// 書き込むJSONファイルパスのフルパス合成する
+		std::string filePath = kDirectoryPath + groupName + ".json";
+		// 書き込み用ファイルストリーム
+		std::ofstream ofs;
+		// ファイル書き込み用に開く
+		ofs.open(filePath);
+
+		//ファイルオープン失敗？
+		if (ofs.fail()) {
+			std::string message = "Failed open data file for write.";
+			MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+			assert(0);
+			return;
+		}
+
+		//ファイルにjson文字列を書き込む
+		ofs << std::setw(4) << root << std::endl;
+		//ファイルを閉じる
+		ofs.close();
+	}
+
+	
+
 }

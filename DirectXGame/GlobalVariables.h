@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 
+
 class GlobalVariables {
 public:
 	static GlobalVariables* GetInstance();
@@ -34,6 +35,12 @@ public:
 
 	//毎フレーム処理
 	void Updeat();
+
+	//ファイルに書き出し
+	void SaveFile(const std::string& groupName);
+
+	//グローバル変数の保存先ファイルパス
+	const std::string kDirectoryPath = "Resources/GlobalVariables/";
 
 private:
 

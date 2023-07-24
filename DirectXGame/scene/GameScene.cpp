@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include <AxisIndicator.h>
+#include "GlobalVariables.h"
 
 GameScene::GameScene() {}
 
@@ -84,6 +85,16 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
+
+    if (input_->PushKey(DIK_2)) {
+		GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+		
+		globalVariables->SaveFile("Player");
+
+		
+	} 
+
+
 	skydome_->Update();
 	ground_->Update();
 	
