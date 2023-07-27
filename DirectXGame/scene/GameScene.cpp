@@ -85,14 +85,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
-
-    if (input_->PushKey(DIK_2)) {
-		GlobalVariables* globalVariables = GlobalVariables::GetInstance();
-		
-		globalVariables->SaveFile("Player");
-
-		
-	} 
+	
+   
 
 
 	skydome_->Update();
@@ -113,6 +107,13 @@ void GameScene::Update() {
 	
 
 #ifdef _DEBUG
+
+	 if (input_->PushKey(DIK_2)) {
+		GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+
+		globalVariables->SaveFile("Player");
+	} 
+
 	if (input_->TriggerKey(DIK_1)) {
 
 		isDebugCameraActve_ = true;

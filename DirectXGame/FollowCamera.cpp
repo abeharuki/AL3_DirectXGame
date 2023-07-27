@@ -59,11 +59,7 @@ void FollowCamera::Update() {
 
 	//ビュー行列の更新
 	viewProjection_.UpdateMatrix();
-	ImGui::Begin("Cmaera");
-	ImGui::Text(
-	    "FCameraPos %f,%f,%f", viewProjection_.matView.m[3][0], viewProjection_.matView.m[3][1],
-	    viewProjection_.matView.m[3][2]);
-	ImGui::End();
+	
 
 }
 

@@ -10,15 +10,11 @@ public:
 	static GlobalVariables* GetInstance();
 
 	//項目
-	struct Item {
-		//項目値
-		std::variant<int32_t, float, Vector3> value;
-	};
+	using Item = std::variant<int32_t, float, Vector3>;
+	
 
 	//グループ
-	struct Group {
-		std::map<std::string, Item> items;
-	};
+	using Group = std::map<std::string, Item>;
 
 	//全データ
 	std::map<std::string, Group> datas_;
@@ -41,6 +37,25 @@ public:
 
 	//グローバル変数の保存先ファイルパス
 	const std::string kDirectoryPath = "Resources/GlobalVariables/";
+
+	//ディレクトの全ファイル読み込み
+	void LoadFiles();
+
+	// ファイルから読み込み
+	void LoadFile(const std::string& groupName);
+
+	// 項目の追加(int)
+	void AddItem(const std::string& grouName, const std::string& key, int32_t value);
+	// 項目の追加(float)
+	void AddItem(const std::string& grouName, const std::string& key, float value);
+	// 項目の追加(Vector3)
+	void AddItem(const std::string& grouName, const std::string& key, Vector3& value);
+
+
+	//値の取得
+	int32_t GetIntValue(const std::string& groupName, const std::string& key);
+	float GetFloatIntValue(const std::string& groupName, const std::string& key);
+	Vector3 GetVecter3Value(const std::string& groupName, const std::string& key);
 
 private:
 

@@ -18,6 +18,9 @@ public:
 	// ギミックの更新
 	void UpdateFloatingGimmick();
 
+	// 調整項目の適用
+	void ApplyGlobalVariables();
+
 private:
 
 	WorldTransform worldTransformBase_;
@@ -25,6 +28,8 @@ private:
 	WorldTransform worldTransformL_;
 	WorldTransform worldTransformR_;
 
+	float kCharacterSpeed = 0.3f;
+	float kArmSpeed = 0.5f;
 
 	Input* input_ = nullptr;
 	//3Dモデル

@@ -1,6 +1,5 @@
 #include "player.h"
 #include <cassert>
-#include "ImGuiManager.h"
 #include <iostream>
 #include "GlobalVariables.h"
 
@@ -32,18 +31,14 @@ void Player::UpdateFloatingGimmick() {
 	worldTransformL_.rotation_.x = worldTransformL_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 	worldTransformR_.rotation_.x = worldTransformR_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &worldTransformH_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat("cycle", &cycle, 1.0f, 120.0f);
-	ImGui::SliderFloat("amplitude", &amplitude, 0.0f, 3.0f);
-	ImGui::SliderFloat(" amplitudeArm", &amplitudeArm, 0.0f, 3.0f);
-	ImGui::End();
+	
 }
 
 // 通常行動初期化
 void Player::BehaviorRootInitialize() {
+	//移動速度
+	kCharacterSpeed = 0.3f;
+
 	// 位置の調整
 	// 頭
 	worldTransformH_.translation_.y = 1.5f;
@@ -70,6 +65,7 @@ void Player::BehaviorAttackInitialize() {
 	attack = false;
 	attackTime = 1.0f;
 	changeTime = 1.0f;
+
 }
 
 // 通常行動
@@ -117,7 +113,7 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 
 */
 
-	const float kCharacterSpeed = 0.3f;
+	kCharacterSpeed = 0.3f;
 	// 移動量
 	Vector3 move = {0.0f, 0.0f, 0.0f};
 
@@ -232,12 +228,21 @@ void Player::Relationship() {
 	    worldTransformL_.matWorld_);
 }
 
-void Player::Initialize(const std::vector<Model*>& models) {
-	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+void Player::ApplyGlobalVariables() {
+#ifdef _DEBUG
+
+
+	GlobalVariables* globalVaribles = GlobalVariables::GetInstance();
 	const char* groupName = "Player";
-	//グループを追加
-	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->SetValue(groupName, "Test", 90);
+	worldTransformH_.translation_ = globalVaribles->GetVecter3Value(groupName, "Head Translation");
+	worldTransformL_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmL Translation");
+	worldTransformR_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmR Translation");
+	amplitude = globalVaribles->GetFloatIntValue(groupName, "amplitude");
+	amplitudeArm = globalVaribles->GetFloatIntValue(groupName, "amplitudeArm");
+#endif
+}
+
+void Player::Initialize(const std::vector<Model*>& models) {
 
 	//基底クラスの初期化
 	BaseCharacter::Initialize(models);
@@ -259,6 +264,18 @@ void Player::Initialize(const std::vector<Model*>& models) {
 
 	//浮遊ギミックの初期化
 	InitializeFloatingGimmick();
+#ifdef _DEBUG
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	// グループを追加
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+
+	globalVariables->AddItem(groupName, "Head Translation", worldTransformH_.translation_);
+	globalVariables->AddItem(groupName, "ArmL Translation", worldTransformL_.translation_);
+	globalVariables->AddItem(groupName, "ArmR Translation", worldTransformR_.translation_);
+	globalVariables->AddItem(groupName, "amplitude", amplitude);
+	globalVariables->AddItem(groupName, "amplitudeArm", amplitudeArm);
+#endif
 }
 
 void Player::Update() { 
@@ -308,14 +325,9 @@ void Player::Update() {
 	worldTransformR_.TransferMatrix();
 	worldTransformW_.TransferMatrix();
 	
-
-	ImGui::Begin("Player");
-	ImGui::Text(
-	    "BasePos %f,%f,%f", worldTransformBase_.matWorld_.m[3][0], worldTransformBase_.matWorld_.m[3][2]);
-	ImGui::Text(
-	    "BodyPos %f,%f,%f", worldTransformB_.matWorld_.m[3][0],worldTransformB_.matWorld_.m[3][2]);
-	ImGui::Text("L_ArmR %f%f", worldTransformL_.rotation_.x, attackTime);
-	ImGui::End();
+#ifdef _DEBUG
+	ApplyGlobalVariables();
+#endif
 }
 
 void Player::Draw(const ViewProjection& viewprojection) {

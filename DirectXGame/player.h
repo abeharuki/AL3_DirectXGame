@@ -2,7 +2,6 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include <imgui.h>
 #include "Utility.h"
 #include "BaseCharacter.h"
 #include <optional>
@@ -43,6 +42,8 @@ public:
 	//パーツ親子関係
 	void Relationship();
 
+	//調整項目の適用
+	void ApplyGlobalVariables();
 
 private:
 	WorldTransform worldTransformBase_;
@@ -62,6 +63,8 @@ private:
 	int modelWeapon_ = 4;
 
 	Input* input_ = nullptr;
+
+	float kCharacterSpeed = 0.0f;
 
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;

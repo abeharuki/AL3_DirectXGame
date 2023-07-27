@@ -2,11 +2,11 @@
 #include "AxisIndicator.h"
 #include "DirectXCommon.h"
 #include "GameScene.h"
-#include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
 #include "GlobalVariables.h"
+#include "ImGuiManager.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -28,10 +28,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize(win);
 
 #pragma region 汎用機能初期化
+#ifdef _DEBUG
 	// ImGuiの初期化
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Initialize(win, dxCommon);
-
+#endif
 	// 入力の初期化
 	input = Input::GetInstance();
 	input->Initialize();
@@ -57,7 +58,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer = PrimitiveDrawer::GetInstance();
 	primitiveDrawer->Initialize();
 #pragma endregion
-
+#ifdef _DEBUG
+	//グローバル変数の読み込み
+	GlobalVariables::GetInstance()->LoadFiles();
+#endif
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
@@ -69,19 +73,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		// ImGui受付開始
-		imguiManager->Begin();
+		
 		// 入力関連の毎フレーム処理
 		input->Update();
+#ifdef _DEBUG
+		// ImGui受付開始
+		imguiManager->Begin();
 		//グローバル変数の更新
 		GlobalVariables::GetInstance()->Updeat();
+#endif
 		// ゲームシーンの毎フレーム処理
 		gameScene->Update();
 		// 軸表示の更新
 		axisIndicator->Update();
+#ifdef _DEBUG
 		// ImGui受付終了
 		imguiManager->End();
-
+#endif
 		// 描画開始
 		dxCommon->PreDraw();
 		// ゲームシーンの描画
@@ -90,8 +98,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
 		primitiveDrawer->Reset();
+#ifdef _DEBUG
 		// ImGui描画
 		imguiManager->Draw();
+#endif
 		// 描画終了
 		dxCommon->PostDraw();
 	}
@@ -99,9 +109,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	SafeDelete(gameScene);
 	audio->Finalize();
+#ifdef _DEBUG
 	// ImGui解放
 	imguiManager->Finalize();
-
+#endif
 	// ゲームウィンドウの破棄
 	win->TerminateGameWindow();
 
