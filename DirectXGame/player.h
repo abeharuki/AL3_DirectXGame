@@ -49,18 +49,30 @@ private:
 	WorldTransform worldTransformBase_;
 	WorldTransform worldTransformB_;
 	WorldTransform worldTransformH_;
-	WorldTransform worldTransformL_;
-	WorldTransform worldTransformR_;
+	WorldTransform worldTransformLarm1_;
+	WorldTransform worldTransformLarm2_;
+	WorldTransform worldTransformRarm1_;
+	WorldTransform worldTransformRarm2_;
+	WorldTransform worldTransformLfeet1_;
+	WorldTransform worldTransformLfeet2_;
+	WorldTransform worldTransformRfeet1_;
+	WorldTransform worldTransformRfeet2_;
 	WorldTransform worldTransformW_;
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
-	//3Dモデル
+	//3Dモデル番号
 	int modelBody_ = 0;
 	int modelHead_ = 1;
-	int modelLarm_ = 2;
-	int modelRarm_ = 3;
-	int modelWeapon_ = 4;
+	int modelLarm1_ = 2;
+	int modelLarm2_ = 3;
+	int modelRarm1_ = 4;
+	int modelRarm2_ = 5;
+	int modelLfeet1_ = 6;
+	int modelLfeet2_ = 7;
+	int modelRfeet1_ = 8;
+	int modelRfeet2_ = 9;
+	int modelWeapon_ = 10;
 
 	Input* input_ = nullptr;
 
@@ -72,9 +84,12 @@ private:
 	float cycle = 0;
 	// 浮遊の振幅
 	float amplitude = 0.0f;
-	float amplitudeArm = 0.3f;
+	float amplitudeArm = 0.4f;
 	//円周率
 	float Pi = 0.0f;
+
+	//歩くフラグ
+	bool walk = false;
 
 	//攻撃フラグ
 	bool attack = false;

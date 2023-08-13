@@ -31,14 +31,23 @@ void GameScene::Initialize() {
 	//頭
 	modelHead_.reset(Model::CreateFromOBJ("float_Head", true));
 	//両手
-	modelLarm_.reset(Model::CreateFromOBJ("float_L_arm", true));
-	modelRarm_.reset(Model::CreateFromOBJ("float_R_arm", true));
+	modelLarm1_.reset(Model::CreateFromOBJ("float_L_arm1", true));
+	modelLarm2_.reset(Model::CreateFromOBJ("float_L_arm2", true));
+	modelRarm1_.reset(Model::CreateFromOBJ("float_R_arm1", true));
+	modelRarm2_.reset(Model::CreateFromOBJ("float_R_arm2", true));
+	//両足
+	modelLfeet1_.reset(Model::CreateFromOBJ("float_L_feet1", true));
+	modelLfeet2_.reset(Model::CreateFromOBJ("float_L_feet2", true));
+	modelRfeet1_.reset(Model::CreateFromOBJ("float_R_feet1", true));
+	modelRfeet2_.reset(Model::CreateFromOBJ("float_R_feet2", true));
 	//武器
 	modelHammer_.reset(Model::CreateFromOBJ("hammer", true));
 	//自キャラモデル
 	std::vector<Model*> playerModels = {
 	    modelBody_.get(), modelHead_.get(), 
-		modelLarm_.get(), modelRarm_.get(), modelHammer_.get()};
+		modelLarm1_.get(),modelLarm2_.get(), modelRarm1_.get(), modelRarm2_.get(),
+	    modelLfeet1_.get(), modelLfeet2_.get(), modelRfeet1_.get(), modelRfeet2_.get(),
+		modelHammer_.get()};
 	//自キャラの初期化
 	player_->Initialize(playerModels);
 

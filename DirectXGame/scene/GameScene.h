@@ -73,8 +73,14 @@ private: // メンバ変数
 	// 自キャラ3Dモデル
 	std::unique_ptr<Model> modelBody_;
 	std::unique_ptr<Model> modelHead_;
-	std::unique_ptr<Model> modelLarm_;
-	std::unique_ptr<Model> modelRarm_;
+	std::unique_ptr<Model> modelLarm1_;
+	std::unique_ptr<Model> modelLarm2_;
+	std::unique_ptr<Model> modelRarm1_;
+	std::unique_ptr<Model> modelRarm2_;
+	std::unique_ptr<Model> modelLfeet1_;
+	std::unique_ptr<Model> modelLfeet2_;
+	std::unique_ptr<Model> modelRfeet1_;
+	std::unique_ptr<Model> modelRfeet2_;
 	//武器
 	std::unique_ptr<Model> modelHammer_;
 

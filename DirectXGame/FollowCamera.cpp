@@ -28,14 +28,21 @@ void FollowCamera::Update() {
 
 	// 回転速度
 	float kCharacterSpeed = 0.0f;
+	float kCharacterSpeed2 = 0.0f;
 	// 左右移動
 	if (input_->PushKey(DIK_LEFTARROW)) {
 		kCharacterSpeed = -0.1f;
 	} else if (input_->PushKey(DIK_RIGHTARROW)) {
 		kCharacterSpeed = 0.1f;
 	}
-	
+	// 上下移動
+	if (input_->PushKey(DIK_UPARROW)) {
+		kCharacterSpeed2 = -0.01f;
+	} else if (input_->PushKey(DIK_DOWNARROW)) {
+		kCharacterSpeed2 = 0.01f;
+	}
 	viewProjection_.rotation_.y += kCharacterSpeed;
+	viewProjection_.rotation_.x += kCharacterSpeed2;
 
 
 	//追従対象がいれば

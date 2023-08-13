@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "GlobalVariables.h"
+#include <imgui.h>
 
 void Player::InitializeFloatingGimmick() {
 	floatingParameter_ = 0.0f;
@@ -28,10 +29,12 @@ void Player::UpdateFloatingGimmick() {
 
 	
 	//腕を振る
-	worldTransformL_.rotation_.x = worldTransformL_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
-	worldTransformR_.rotation_.x = worldTransformR_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+	worldTransformLarm1_.rotation_.x = worldTransformLarm1_.rotation_.x - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+	worldTransformRarm1_.rotation_.x = worldTransformRarm1_.rotation_.x + (std::sin(floatingParameter_) * amplitudeArm) / 8;
 
-	
+	//足の動き
+	worldTransformLfeet1_.rotation_.x = worldTransformLfeet1_.rotation_.x - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+	worldTransformRfeet1_.rotation_.x = worldTransformRfeet1_.rotation_.x + (std::sin(floatingParameter_) * amplitudeArm) / 8;
 }
 
 // 通常行動初期化
@@ -42,21 +45,38 @@ void Player::BehaviorRootInitialize() {
 	// 位置の調整
 	// 頭
 	worldTransformH_.translation_.y = 1.5f;
+	//体
+	worldTransformB_.translation_.y = 1.5f;
+	
 	// 腕
-	worldTransformL_.translation_.x = -0.5f;
-	worldTransformR_.translation_.x = 0.5f;
-	worldTransformL_.translation_.y = 1.3f;
-	worldTransformR_.translation_.y = 1.3f;
+	worldTransformLarm1_.translation_.x = -0.5f;
+	worldTransformRarm1_.translation_.x = 0.5f;
+	worldTransformLarm1_.translation_.y = 1.3f;
+	worldTransformRarm1_.translation_.y = 1.3f;
 
+	worldTransformLarm2_.translation_.x = -0.5f;
+	worldTransformRarm2_.translation_.x = 0.5f;
+	worldTransformLarm2_.translation_.y = 1.3f;
+	worldTransformRarm2_.translation_.y = 1.3f;
+	//足
+	worldTransformLfeet1_.translation_.x = 0.0f;
+	worldTransformLfeet1_.translation_.y = 0.0f;
+	worldTransformLfeet2_.translation_.x = 0.0f;
+	worldTransformLfeet2_.translation_.y = 0.0f;
+
+	worldTransformRfeet1_.translation_.x = 0.0f;
+	worldTransformRfeet1_.translation_.y = 0.0f;
+	worldTransformRfeet2_.translation_.x = 0.0f;
+	worldTransformRfeet2_.translation_.y = 0.0f;
 	// 腕を振る
-	worldTransformL_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
-	worldTransformR_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+	worldTransformLarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+	worldTransformRarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 }
 
 // 攻撃初期化
 void Player::BehaviorAttackInitialize() {
-	worldTransformR_.rotation_.x = -2.5f;
-	worldTransformL_.rotation_.x = -2.5f;
+	worldTransformRarm1_.rotation_.x = -2.5f;
+	worldTransformLarm1_.rotation_.x = -2.5f;
 	// 武器
 	worldTransformW_.translation_.x = 0.5f;
 	worldTransformW_.rotation_.x = -3.1f;
@@ -116,7 +136,8 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 	kCharacterSpeed = 0.3f;
 	// 移動量
 	Vector3 move = {0.0f, 0.0f, 0.0f};
-
+	//歩くフラグ
+	walk = false;
 	// 左右移動
 	if (input_->PushKey(DIK_A)) {
 		move.x = -1;
@@ -135,8 +156,26 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 
 	if (input_->PushKey(DIK_W) || input_->PushKey(DIK_A) || input_->PushKey(DIK_S) ||
 	    input_->PushKey(DIK_D)) {
+		walk = true;
 		move = utility_->Normalize(move);
 		move = (utility_->Multiply(kCharacterSpeed, move));
+	}
+
+	if (walk) {
+		worldTransformB_.rotation_.x = 0.1f;
+		worldTransformLarm2_.rotation_.x = -0.5f;
+		worldTransformRarm2_.rotation_.x = -0.5f;
+		
+		// 浮遊ギミックの更新
+		UpdateFloatingGimmick();
+	} else {
+		worldTransformB_.rotation_.x = 0.0f;
+		worldTransformLarm2_.rotation_.x = 0.0f;
+		worldTransformRarm2_.rotation_.x = 0.0f;
+		worldTransformLarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+		worldTransformRarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+		worldTransformLfeet1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
+		worldTransformRfeet1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 	}
 
 	//
@@ -159,8 +198,7 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
-	// 浮遊ギミックの更新
-	UpdateFloatingGimmick();
+	
 
 }
 
@@ -168,15 +206,15 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 void Player::BehaviorAttackUpdata() {
 	
 
-	worldTransformL_.rotation_.x += attackkSpeed;
-	worldTransformR_.rotation_.x += attackkSpeed;
+	worldTransformLarm1_.rotation_.x += attackkSpeed;
+	worldTransformRarm1_.rotation_.x += attackkSpeed;
 
-	if (worldTransformL_.rotation_.x <= -3.5f) {
+	if (worldTransformLarm1_.rotation_.x <= -3.5f) {
 		attack = true;
 	}
 
 
-	if (worldTransformL_.rotation_.x > -1.7f) {
+	if (worldTransformLarm1_.rotation_.x > -1.7f) {
 		attackkSpeed = 0.0f;
 		
 		if (changeTime > 0) {
@@ -207,25 +245,71 @@ void Player::Relationship() {
 	    utility_->MakeAffineMatrix(
 	        worldTransformB_.scale_, worldTransformB_.rotation_, worldTransformB_.translation_),
 	    worldTransformBase_.matWorld_);
+
 	worldTransformH_.matWorld_ = utility_->Multiply(
 	    utility_->MakeAffineMatrix(
 	        worldTransformH_.scale_, worldTransformH_.rotation_, worldTransformH_.translation_),
 	    worldTransformB_.matWorld_);
 	// 腕
-	worldTransformL_.matWorld_ = utility_->Multiply(
+	//左
+	worldTransformLarm1_.matWorld_ = utility_->Multiply(
 	    utility_->MakeAffineMatrix(
-	        worldTransformL_.scale_, worldTransformL_.rotation_, worldTransformL_.translation_),
+	        worldTransformLarm1_.scale_, worldTransformLarm1_.rotation_,
+	        worldTransformLarm1_.translation_),
 	    worldTransformB_.matWorld_);
-	worldTransformR_.matWorld_ = utility_->Multiply(
+
+	worldTransformLarm2_.matWorld_ = utility_->Multiply(
 	    utility_->MakeAffineMatrix(
-	        worldTransformR_.scale_, worldTransformR_.rotation_, worldTransformR_.translation_),
+	        worldTransformLarm2_.scale_, worldTransformLarm2_.rotation_,
+	        worldTransformLarm2_.translation_),
+	    worldTransformLarm1_.matWorld_);
+
+
+	//右
+	worldTransformRarm1_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformRarm1_.scale_, worldTransformRarm1_.rotation_,
+	        worldTransformRarm1_.translation_),
 	    worldTransformB_.matWorld_);
+
+	worldTransformRarm2_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformRarm2_.scale_, worldTransformRarm2_.rotation_,
+	        worldTransformRarm2_.translation_),
+	    worldTransformRarm1_.matWorld_);
+
+	//足
+	//左
+	worldTransformLfeet1_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformLfeet1_.scale_, worldTransformLfeet1_.rotation_,
+	        worldTransformLfeet1_.translation_),
+	    worldTransformB_.matWorld_);
+
+	worldTransformLfeet2_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformLfeet2_.scale_, worldTransformLfeet2_.rotation_,
+	        worldTransformLfeet2_.translation_),
+	    worldTransformLfeet1_.matWorld_);
+
+	//右
+	worldTransformRfeet1_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformRfeet1_.scale_, worldTransformRfeet1_.rotation_,
+	        worldTransformRfeet1_.translation_),
+	    worldTransformB_.matWorld_);
+
+	worldTransformRfeet2_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformRfeet2_.scale_, worldTransformRfeet2_.rotation_,
+	        worldTransformRfeet2_.translation_),
+	    worldTransformRfeet1_.matWorld_);
 
 	// 武器
 	worldTransformW_.matWorld_ = utility_->Multiply(
 	    utility_->MakeAffineMatrix(
 	        worldTransformW_.scale_, worldTransformW_.rotation_, worldTransformW_.translation_),
-	    worldTransformL_.matWorld_);
+	    worldTransformLarm1_.matWorld_);
 }
 
 void Player::ApplyGlobalVariables() {
@@ -235,8 +319,18 @@ void Player::ApplyGlobalVariables() {
 	GlobalVariables* globalVaribles = GlobalVariables::GetInstance();
 	const char* groupName = "Player";
 	worldTransformH_.translation_ = globalVaribles->GetVecter3Value(groupName, "Head Translation");
-	worldTransformL_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmL Translation");
-	worldTransformR_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmR Translation");
+	worldTransformB_.translation_ = globalVaribles->GetVecter3Value(groupName, "Body Translation");
+
+	worldTransformLarm1_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmL1 Translation");
+	worldTransformRarm1_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmR1 Translation");
+	worldTransformLarm2_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmL2 Translation");
+	worldTransformRarm2_.translation_ = globalVaribles->GetVecter3Value(groupName, "ArmR2 Translation");
+
+	worldTransformLfeet1_.translation_ = globalVaribles->GetVecter3Value(groupName, "feetL1 Translation");
+	worldTransformLfeet2_.translation_ = globalVaribles->GetVecter3Value(groupName, "feetL2 Translation");
+	worldTransformRfeet1_.translation_ = globalVaribles->GetVecter3Value(groupName, "feetR1 Translation");
+	worldTransformRfeet2_.translation_ = globalVaribles->GetVecter3Value(groupName, "feetR2 Translation");
+
 	amplitude = globalVaribles->GetFloatIntValue(groupName, "amplitude");
 	amplitudeArm = globalVaribles->GetFloatIntValue(groupName, "amplitudeArm");
 #endif
@@ -255,8 +349,14 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformBase_.Initialize();
 	worldTransformB_.Initialize();
 	worldTransformH_.Initialize();
-	worldTransformL_.Initialize();
-	worldTransformR_.Initialize();
+	worldTransformLarm1_.Initialize();
+	worldTransformLarm2_.Initialize();
+	worldTransformRarm1_.Initialize();
+	worldTransformRarm2_.Initialize();
+	worldTransformLfeet1_.Initialize();
+	worldTransformLfeet2_.Initialize();
+	worldTransformRfeet1_.Initialize();
+	worldTransformRfeet2_.Initialize();
 	worldTransformW_.Initialize();
 
 	
@@ -271,8 +371,18 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	GlobalVariables::GetInstance()->CreateGroup(groupName);
 
 	globalVariables->AddItem(groupName, "Head Translation", worldTransformH_.translation_);
-	globalVariables->AddItem(groupName, "ArmL Translation", worldTransformL_.translation_);
-	globalVariables->AddItem(groupName, "ArmR Translation", worldTransformR_.translation_);
+	globalVariables->AddItem(groupName, "Body Translation", worldTransformB_.translation_);
+
+	globalVariables->AddItem(groupName, "ArmL1 Translation", worldTransformLarm1_.translation_);
+	globalVariables->AddItem(groupName, "ArmR1 Translation", worldTransformRarm1_.translation_);
+	globalVariables->AddItem(groupName, "ArmL2 Translation", worldTransformLarm2_.translation_);
+	globalVariables->AddItem(groupName, "ArmR2 Translation", worldTransformRarm2_.translation_);
+
+	globalVariables->AddItem(groupName, "feetL1 Translation", worldTransformLfeet1_.translation_);
+	globalVariables->AddItem(groupName, "feetL2 Translation", worldTransformLfeet2_.translation_);
+	globalVariables->AddItem(groupName, "feetR1 Translation", worldTransformRfeet1_.translation_);
+	globalVariables->AddItem(groupName, "feetR2 Translation", worldTransformRfeet2_.translation_);
+
 	globalVariables->AddItem(groupName, "amplitude", amplitude);
 	globalVariables->AddItem(groupName, "amplitudeArm", amplitudeArm);
 #endif
@@ -321,9 +431,21 @@ void Player::Update() {
 	worldTransformBase_.UpdateMatrix();
 	worldTransformB_.TransferMatrix();
 	worldTransformH_.TransferMatrix();
-	worldTransformL_.TransferMatrix();
-	worldTransformR_.TransferMatrix();
+	worldTransformLarm1_.TransferMatrix();
+	worldTransformRarm1_.TransferMatrix();
+	worldTransformLarm2_.TransferMatrix();
+	worldTransformRarm2_.TransferMatrix();
+	worldTransformLfeet1_.TransferMatrix();
+	worldTransformLfeet2_.TransferMatrix();
+	worldTransformRfeet1_.TransferMatrix();
+	worldTransformRfeet2_.TransferMatrix();
 	worldTransformW_.TransferMatrix();
+
+	ImGui::Begin("Window");
+	ImGui::Text("%f", worldTransformLarm2_.translation_.x);
+	ImGui::End();
+
+
 	
 #ifdef _DEBUG
 	ApplyGlobalVariables();
@@ -333,8 +455,16 @@ void Player::Update() {
 void Player::Draw(const ViewProjection& viewprojection) {
 	models_[modelBody_]->Draw(worldTransformB_, viewprojection);
 	models_[modelHead_]->Draw(worldTransformH_, viewprojection);
-	models_[modelLarm_]->Draw(worldTransformL_, viewprojection);
-	models_[modelRarm_]->Draw(worldTransformR_, viewprojection);
+
+	models_[modelLarm1_]->Draw(worldTransformLarm1_, viewprojection);
+	models_[modelLarm2_]->Draw(worldTransformLarm2_, viewprojection);
+	models_[modelRarm1_]->Draw(worldTransformRarm1_, viewprojection);
+	models_[modelRarm2_]->Draw(worldTransformRarm2_, viewprojection);
+
+	models_[modelLfeet1_]->Draw(worldTransformLfeet1_, viewprojection);
+	models_[modelLfeet2_]->Draw(worldTransformLfeet2_, viewprojection);
+	models_[modelRfeet1_]->Draw(worldTransformRfeet1_, viewprojection);
+	models_[modelRfeet2_]->Draw(worldTransformRfeet2_, viewprojection);
 	if (behavior_ == Behavior::kAttack) {
 		models_[modelWeapon_]->Draw(worldTransformW_, viewprojection);
 	}
