@@ -1,1 +1,7 @@
-﻿  DirectXGame.vcxproj -> C:\授業前期2年\AL3\KamataEngine\Generated\Outputs\Debug\DirectXGame.exe
+﻿  Utility.cpp
+C:\授業前期2年\AL3\KamataEngine\DirectXGame\Utility.cpp(346,15): error C2039: 'fmod': 'std' のメンバーではありません
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\include\optional(31,1): message : 'std' の宣言を確認してください
+C:\授業前期2年\AL3\KamataEngine\DirectXGame\Utility.cpp(346,19): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\授業前期2年\AL3\KamataEngine\DirectXGame\Utility.cpp(348,15): error C2039: 'fmod': 'std' のメンバーではありません
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\include\optional(31,1): message : 'std' の宣言を確認してください
+C:\授業前期2年\AL3\KamataEngine\DirectXGame\Utility.cpp(348,19): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。

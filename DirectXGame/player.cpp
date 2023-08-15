@@ -75,7 +75,7 @@ void Player::BehaviorAttackInitialize() {
 // 通常行動
 void Player::BehaviorRootUpdata() {
 
-	/*/ 移動速度
+// 移動速度
 
 
 
@@ -106,17 +106,14 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 
 	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
 
-	worldTransformB_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformH_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformL_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformR_.rotation_.y = worldTransformBase_.rotation_.y;
+	
 
 	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
 }
 
 
-*/
 
+/*
 	const float kCharacterSpeed = 0.3f;
 	// 移動量
 	Vector3 move = {0.0f, 0.0f, 0.0f};
@@ -162,7 +159,7 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 	if (input_->PushKey(DIK_SPACE)) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
-
+	*/
 	// 浮遊ギミックの更新
 	UpdateFloatingGimmick();
 
