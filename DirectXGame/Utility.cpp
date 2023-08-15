@@ -1,5 +1,5 @@
 #include "Utility.h"
-
+#include <iostream>
 
 
 // 回転X
@@ -334,3 +334,27 @@ Matrix4x4 Utility::Inverse(const Matrix4x4& m) {
 	return Inverse;
 
 };
+
+Vector3 Utility::Lerp(const Vector3& p0, const Vector3& p1, float t) {
+	return {
+	    (1.0f - t) * p0.x + t * p1.x,
+	    (1.0f - t) * p0.y + t * p1.y,
+	    (1.0f - t) * p0.z + t * p1.z,
+	};
+}
+
+//最短角度補間
+float Utility::LerpShortAngle(float a, float b, float t) {
+	float Lerp = 0.0f;
+	float Pi = 3.1415f;
+	//角度差分を求める
+	float diff = b - a;
+
+	if (Pi < diff) {
+		Lerp = std::fmod(diff, -2.0f * Pi);
+	} else if (-Pi > diff) {
+		Lerp = std::fmod(diff, 2.0f * Pi);
+	}
+	
+	return a + Lerp * t;
+}

@@ -46,5 +46,10 @@ public:
 
 	// 逆転行列
 	Matrix4x4 Inverse(const Matrix4x4& m);
+
+	Vector3 Lerp(const Vector3& p0, const Vector3& p1, float t);
+
+	//最短角度補間
+	float LerpShortAngle(float a, float b, float t);
 	
 };

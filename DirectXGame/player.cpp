@@ -45,6 +45,8 @@ void Player::Update() {
 
 	// ジョイスティックの状態取得
 	if (input_->GetInstance()->GetJoystickState(0, joyState)) {
+		const float value = 0.7f;
+		bool isMove = false;
 
 		// 移動速度
 		const float kCharacterSpeed = 0.2f;
@@ -53,7 +55,13 @@ void Player::Update() {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
 		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 
-	    move = (utility_->Multiply(kCharacterSpeed, move));
+		if (utility_->Length(move) > value) {
+			isMove = true;
+		}
+
+		
+	    
+		move = (utility_->Multiply(kCharacterSpeed, move));
 
 		Matrix4x4 rotateMatrix = utility_->Multiply(
 		    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
@@ -63,14 +71,20 @@ void Player::Update() {
 		//move = utility_->Normalize(move);
 		move = utility_->TransformNormal(move, rotateMatrix);
 
-		worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
+		if (isMove) {
+			worldTransformBase_.translation_ =
+			    utility_->Add(worldTransformBase_.translation_, move);
+			worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
+		}
 
 		worldTransformB_.rotation_.y = worldTransformBase_.rotation_.y;
 		worldTransformH_.rotation_.y = worldTransformBase_.rotation_.y;
 		worldTransformL_.rotation_.y = worldTransformBase_.rotation_.y;
 		worldTransformR_.rotation_.y = worldTransformBase_.rotation_.y;
 
-		worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
+		worldTransformBase_.rotation_.y =
+		    utility_->LerpShortAngle(worldTransformBase_.rotation_.y, 0.0f, 1.0f);
+		
 	}
 	
 	/*/ 移動速度
