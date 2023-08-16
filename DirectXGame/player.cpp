@@ -32,14 +32,7 @@ void Player::UpdateFloatingGimmick() {
 	worldTransformL_.rotation_.x = worldTransformL_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 	worldTransformR_.rotation_.x = worldTransformR_.rotation_.x  - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &worldTransformH_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_.translation_.x, 0.0f, 1.0f);
-	ImGui::SliderFloat("cycle", &cycle, 1.0f, 120.0f);
-	ImGui::SliderFloat("amplitude", &amplitude, 0.0f, 3.0f);
-	ImGui::SliderFloat(" amplitudeArm", &amplitudeArm, 0.0f, 3.0f);
-	ImGui::End();
+	
 }
 
 // 通常行動初期化
@@ -75,15 +68,11 @@ void Player::BehaviorAttackInitialize() {
 //ダッシュ初期化
 void Player::BehaviorDashInitialize() { 
 	workDash_.dashParameter_ = 0;
-	worldTransformBase_.rotation_.y = 0;
+	worldTransformBase_.rotation_.y = destinationAngleY_;
 }
 
 // 通常行動
 void Player::BehaviorRootUpdate() {
-
-// 移動速度
-
-
 
 // ゲームパッドの状態を得る変数(XINPUT)
 XINPUT_STATE joyState;
@@ -93,30 +82,41 @@ XINPUT_STATE joyState;
 // ジョイスティックの状態取得
 if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 
-	// 移動速度
-	const float kCharacterSpeed = 0.2f;
-	// 移動量
-	Vector3 move = {
-	    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
-	    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
-	move = utility_->Normalize(move);
-	move = (utility_->Multiply(kCharacterSpeed, move));
+	// ジョイスティックの状態取得
+	if (input_->GetInstance()->GetJoystickState(0, joyState)) {
+		const float value = 0.7f;
+		bool isMove = false;
 
-	Matrix4x4 rotateMatrix = utility_->Multiply(
-	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
-	    utility_->Multiply(
-	        utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
-	        utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
-	//move = utility_->Normalize(move);
-	move = utility_->TransformNormal(move, rotateMatrix);
+		// 移動速度
+		const float kCharacterSpeed = 0.2f;
+		// 移動量
+		Vector3 move = {
+			(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
+			(float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 
-	//目標角度
-	destinationAngleY_ = std::atan2(move.x, move.z);
+		if (utility_->Length(move) > value) {
+			isMove = true;
+		}
 
-	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
+		move = utility_->Multiply(kCharacterSpeed, move);
 
-	worldTransformBase_.rotation_.y =
-		utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY_, 0.1f);
+		Matrix4x4 rotateMatrix = utility_->Multiply(
+			utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
+			utility_->Multiply(
+			    utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
+			    utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
+		//move = utility_->Normalize(move);
+		move = utility_->TransformNormal(move, rotateMatrix);
+
+		if (isMove) {
+			worldTransformBase_.translation_ =
+				utility_->Add(worldTransformBase_.translation_, move);
+			destinationAngleY_ = std::atan2(move.x, move.z);
+		}
+
+		worldTransformBase_.rotation_.y =
+			utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY_, 0.2f);
+	}
 }
 
    // 攻撃
@@ -130,53 +130,6 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
    }
 
 
-/*
-	const float kCharacterSpeed = 0.3f;
-	// 移動量
-	Vector3 move = {0.0f, 0.0f, 0.0f};
-
-	// 左右移動
-	if (input_->PushKey(DIK_A)) {
-		move.x = -1;
-
-	} else if (input_->PushKey(DIK_D)) {
-		move.x = 1;
-	}
-
-	// 上下移動
-	if (input_->PushKey(DIK_S)) {
-		move.z = -1;
-
-	} else if (input_->PushKey(DIK_W)) {
-		move.z = 1;
-	}
-
-	if (input_->PushKey(DIK_W) || input_->PushKey(DIK_A) || input_->PushKey(DIK_S) ||
-	    input_->PushKey(DIK_D)) {
-		move = utility_->Normalize(move);
-		move = (utility_->Multiply(kCharacterSpeed, move));
-	}
-
-	//
-	Matrix4x4 rotateMatrix = utility_->Multiply(
-	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
-	    utility_->Multiply(
-	        utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
-	        utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
-
-	move = utility_->TransformNormal(move, rotateMatrix);
-	// 回転
-	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
-
-	// 平行移動
-	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
-	
-
-	//攻撃
-	if (input_->PushKey(DIK_SPACE)) {
-		behaviorRequest_ = Behavior::kAttack;
-	}
-	*/
 	// 浮遊ギミックの更新
 	UpdateFloatingGimmick();
 
@@ -222,7 +175,22 @@ void Player::BehaviorAttackUpdate() {
 //ダッシュ
 void Player::BehaviorDashUpdate() {
 	
+	// 移動速度
+	const float kCharacterSpeed = 1.0f;
+	Vector3 velocity = {0, 0, kCharacterSpeed}; 
 	
+	velocity = utility_->TransformNormal(velocity, worldTransformBase_.matWorld_);
+	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, velocity);
+	
+	
+	//ダッシュの時間
+	const uint32_t behaviorDashTime = 15;
+
+	//既定の時間経過で通常行動に戻る
+	if (++workDash_.dashParameter_ >= behaviorDashTime) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
 }
 
 void Player::Relationship() {
@@ -337,8 +305,7 @@ void Player::Update() {
 	ImGui::Begin("Player");
 	ImGui::Text(
 	    "BasePos %f,%f,%f", worldTransformBase_.matWorld_.m[3][0], worldTransformBase_.matWorld_.m[3][2]);
-	ImGui::Text(
-	    "BodyPos %f,%f,%f", worldTransformB_.matWorld_.m[3][0],worldTransformB_.matWorld_.m[3][2]);
+	
 	ImGui::Text("L_ArmR %f%f", worldTransformL_.rotation_.x, attackTime);
 	ImGui::End();
 }
