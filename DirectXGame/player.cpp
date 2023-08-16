@@ -39,35 +39,34 @@ void Player::UpdateFloatingGimmick() {
 
 // 通常行動初期化
 void Player::BehaviorRootInitialize() {
-	//移動速度
-	kCharacterSpeed = 0.3f;
+	
 
 	// 位置の調整
 	// 頭
-	worldTransformH_.translation_.y = 1.5f;
+	worldTransformH_.translation_.y = 1.36f;
 	//体
-	worldTransformB_.translation_.y = 1.5f;
+	worldTransformB_.translation_.y = 1.44f;
 	
 	// 腕
-	worldTransformLarm1_.translation_.x = -0.5f;
-	worldTransformRarm1_.translation_.x = 0.5f;
-	worldTransformLarm1_.translation_.y = 1.3f;
-	worldTransformRarm1_.translation_.y = 1.3f;
+	worldTransformLarm1_.translation_.x = -0.96f;
+	worldTransformRarm1_.translation_.x = 0.96f;
+	worldTransformLarm1_.translation_.y = 1.44f;
+	worldTransformRarm1_.translation_.y = 1.44f;
 
-	worldTransformLarm2_.translation_.x = -0.5f;
-	worldTransformRarm2_.translation_.x = 0.5f;
-	worldTransformLarm2_.translation_.y = 1.3f;
-	worldTransformRarm2_.translation_.y = 1.3f;
+	worldTransformLarm2_.translation_.x = 0.0f;
+	worldTransformRarm2_.translation_.x = 0.0f;
+	worldTransformLarm2_.translation_.y = -0.65f;
+	worldTransformRarm2_.translation_.y = -0.65f;
 	//足
-	worldTransformLfeet1_.translation_.x = 0.0f;
-	worldTransformLfeet1_.translation_.y = 0.0f;
+	worldTransformLfeet1_.translation_.x = -0.48f;
+	worldTransformLfeet1_.translation_.y = 0.24f;
 	worldTransformLfeet2_.translation_.x = 0.0f;
-	worldTransformLfeet2_.translation_.y = 0.0f;
+	worldTransformLfeet2_.translation_.y = -0.72f;
 
-	worldTransformRfeet1_.translation_.x = 0.0f;
-	worldTransformRfeet1_.translation_.y = 0.0f;
+	worldTransformRfeet1_.translation_.x = 0.48f;
+	worldTransformRfeet1_.translation_.y = 0.24f;
 	worldTransformRfeet2_.translation_.x = 0.0f;
-	worldTransformRfeet2_.translation_.y = 0.0f;
+	worldTransformRfeet2_.translation_.y = -0.72f;
 	// 腕を振る
 	worldTransformLarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 	worldTransformRarm1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
@@ -88,78 +87,60 @@ void Player::BehaviorAttackInitialize() {
 
 }
 
-// 通常行動
-void Player::BehaviorRootUpdata() {
-
-	/*/ 移動速度
-
-
-
-// ゲームパッドの状態を得る変数(XINPUT)
-XINPUT_STATE joyState;
-
-
-
-// ジョイスティックの状態取得
-if (input_->GetInstance()->GetJoystickState(0, joyState)) {
-
-	// 移動速度
-	const float kCharacterSpeed = 0.2f;
-	// 移動量
-	Vector3 move = {
-	    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
-	    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
-	move = utility_->Normalize(move);
-	move = (utility_->Multiply(kCharacterSpeed, move));
-
-	Matrix4x4 rotateMatrix = utility_->Multiply(
-	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
-	    utility_->Multiply(
-	        utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
-	        utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
-	//move = utility_->Normalize(move);
-	move = utility_->TransformNormal(move, rotateMatrix);
-
-	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
-
-	worldTransformB_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformH_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformL_.rotation_.y = worldTransformBase_.rotation_.y;
-	worldTransformR_.rotation_.y = worldTransformBase_.rotation_.y;
-
-	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
+// ダッシュ初期化
+void Player::BehaviorDashInitialize() {
+	workDash_.dashParameter_ = 0;
+	worldTransformBase_.rotation_.y = destinationAngleY_;
 }
 
-
-*/
-
-	kCharacterSpeed = 0.3f;
-	// 移動量
-	Vector3 move = {0.0f, 0.0f, 0.0f};
-	//歩くフラグ
+// 通常行動
+void Player::BehaviorRootUpdata() {
 	walk = false;
-	// 左右移動
-	if (input_->PushKey(DIK_A)) {
-		move.x = -1;
 
-	} else if (input_->PushKey(DIK_D)) {
-		move.x = 1;
+
+    // ゲームパッドの状態を得る変数(XINPUT)
+    XINPUT_STATE joyState;
+
+    // ジョイスティックの状態取得
+	if (input_->GetInstance()->GetJoystickState(0, joyState)) {
+		const float value = 0.7f;
+		bool isMove = false;
+		
+		// 移動速度
+		const float kCharacterSpeed = 0.2f;
+		// 移動量
+		Vector3 move = {
+			(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
+			(float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+
+		if (utility_->Length(move) > value) {
+			isMove = true;
+		}
+
+		move = utility_->Multiply(kCharacterSpeed, move);
+
+		Matrix4x4 rotateMatrix = utility_->Multiply(
+			utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
+			utility_->Multiply(
+			    utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
+			    utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
+		// move = utility_->Normalize(move);
+		move = utility_->TransformNormal(move, rotateMatrix);
+
+		if (isMove) {
+			walk = true;
+			worldTransformBase_.translation_ =
+				utility_->Add(worldTransformBase_.translation_, move);
+			destinationAngleY_ = std::atan2(move.x, move.z);
+		}
+
+		worldTransformBase_.rotation_.y =
+			utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY_, 0.2f);
 	}
 
-	// 上下移動
-	if (input_->PushKey(DIK_S)) {
-		move.z = -1;
 
-	} else if (input_->PushKey(DIK_W)) {
-		move.z = 1;
-	}
 
-	if (input_->PushKey(DIK_W) || input_->PushKey(DIK_A) || input_->PushKey(DIK_S) ||
-	    input_->PushKey(DIK_D)) {
-		walk = true;
-		move = utility_->Normalize(move);
-		move = (utility_->Multiply(kCharacterSpeed, move));
-	}
+
 
 	if (walk) {
 		worldTransformB_.rotation_.x = 0.1f;
@@ -178,26 +159,17 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 		worldTransformRfeet1_.rotation_.x = 0.0f - (std::sin(floatingParameter_) * amplitudeArm) / 8;
 	}
 
-	//
-	Matrix4x4 rotateMatrix = utility_->Multiply(
-	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
-	    utility_->Multiply(
-	        utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
-	        utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
-
-	move = utility_->TransformNormal(move, rotateMatrix);
-	// 回転
-	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
-
-	// 平行移動
-	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
 	
 
-	//攻撃
-	if (input_->PushKey(DIK_SPACE)) {
+     // 攻撃
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
+	  // ダッシュボタンを押したら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		behaviorRequest_ = Behavior::kDash;
+	}
 	
 
 }
@@ -238,6 +210,26 @@ void Player::BehaviorAttackUpdata() {
 
 
 }
+
+// ダッシュ
+void Player::BehaviorDashUpdate() {
+
+	// 移動速度
+	const float kCharacterSpeed = 1.0f;
+	Vector3 velocity = {0, 0, kCharacterSpeed};
+
+	velocity = utility_->TransformNormal(velocity, worldTransformBase_.matWorld_);
+	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, velocity);
+
+	// ダッシュの時間
+	const uint32_t behaviorDashTime = 15;
+
+	// 既定の時間経過で通常行動に戻る
+	if (++workDash_.dashParameter_ >= behaviorDashTime) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
+
 
 void Player::Relationship() {
 	// 階層アニメーション
@@ -404,6 +396,9 @@ void Player::Update() {
 		case Behavior::kAttack:
 			BehaviorAttackInitialize();
 			break;
+		case Behavior::kDash:
+			BehaviorDashInitialize();
+			break;
 		}
 
 		// 振る舞いリセット
@@ -425,8 +420,12 @@ void Player::Update() {
 		// 攻撃
 		BehaviorAttackUpdata();
 		break;
+	case Behavior::kDash:
+		BehaviorDashUpdate();
+		break;
 	}
 
+	worldTransformBase_.translation_.y = 0.0f;
 	
 	worldTransformBase_.UpdateMatrix();
 	worldTransformB_.TransferMatrix();

@@ -20,11 +20,14 @@ public:
 	/// </summary>
 	void Update();
 
-	void SetTarget(const WorldTransform* target) { target_ = target; }
+	void SetTarget(const WorldTransform* target);
 
 	const ViewProjection& GetViewProjection() { return viewProjection_; }
 
-	
+	void Reset();
+
+	// 追従対象からのオフセット計算
+	Vector3 calculateOffset() const;
 
 private:
 	ViewProjection viewProjection_;
@@ -34,6 +37,11 @@ private:
 
 	// 数学関数
 	std::unique_ptr<Utility> utility_;
-	
+
+	// 追跡対象の残像座標
+	Vector3 interTarget_ = {};
+	// 目標角度
+	float destinationAngleY_ = 0.0f;
+	float destinationAngleX_ = 0.0f;
 };
 
