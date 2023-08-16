@@ -34,11 +34,18 @@ public:
 	//攻撃初期化
 	void BehaviorAttackInitialize();
 
+	//ダッシュ初期化
+	void BehaviorDashInitialize();
+
 	//行動
-	void BehaviorRootUpdata();
+	void BehaviorRootUpdate();
 
 	//攻撃
-	void BehaviorAttackUpdata();
+	void BehaviorAttackUpdate();
+
+	//ダッシュ
+	void BehaviorDashUpdate();
+
 
 	//パーツ親子関係
 	void Relationship();
@@ -79,6 +86,9 @@ private:
 	float attackTime = 0.0f;
 	float changeTime = 0.0f;
 
+	//目標の角度
+	float destinationAngleY_ = 0.0f;
+
 	// 数学関数
 	std::unique_ptr<Utility> utility_;
 	
@@ -86,10 +96,16 @@ private:
 	enum class Behavior {
 		kRoot,//通常状態
 		kAttack,//攻撃中
+		kDash,//ダッシュ
 	};
 
 	Behavior behavior_ = Behavior::kRoot;
 	//次の振る舞いリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
-
+	//ダッシュ用ワーク
+	struct WorkDash {
+		//ダッシュ用媒介変数
+		uint32_t dashParameter_ = 0;
+	};
+	WorkDash workDash_;
 };

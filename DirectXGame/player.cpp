@@ -72,8 +72,14 @@ void Player::BehaviorAttackInitialize() {
 	changeTime = 1.0f;
 }
 
+//ダッシュ初期化
+void Player::BehaviorDashInitialize() { 
+	workDash_.dashParameter_ = 0;
+	worldTransformBase_.rotation_.y = 0;
+}
+
 // 通常行動
-void Player::BehaviorRootUpdata() {
+void Player::BehaviorRootUpdate() {
 
 // 移動速度
 
@@ -104,13 +110,24 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 	//move = utility_->Normalize(move);
 	move = utility_->TransformNormal(move, rotateMatrix);
 
-	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
-
-	
+	//目標角度
+	destinationAngleY_ = std::atan2(move.x, move.z);
 
 	worldTransformBase_.translation_ = utility_->Add(worldTransformBase_.translation_, move);
+
+	worldTransformBase_.rotation_.y =
+		utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY_, 0.1f);
 }
 
+   // 攻撃
+   if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+	   behaviorRequest_ = Behavior::kAttack;
+   }
+
+    // ダッシュボタンを押したら
+   if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+	   behaviorRequest_ = Behavior::kDash;
+   }
 
 
 /*
@@ -166,7 +183,7 @@ if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 }
 
 // 攻撃
-void Player::BehaviorAttackUpdata() {
+void Player::BehaviorAttackUpdate() {
 	
 
 	worldTransformL_.rotation_.x += attackkSpeed;
@@ -200,6 +217,12 @@ void Player::BehaviorAttackUpdata() {
 
 
 
+}
+
+//ダッシュ
+void Player::BehaviorDashUpdate() {
+	
+	
 }
 
 void Player::Relationship() {
@@ -275,6 +298,8 @@ void Player::Update() {
 		case Behavior::kAttack:
 			BehaviorAttackInitialize();
 			break;
+		case Behavior::kDash:
+			BehaviorDashInitialize();
 		}
 
 		// 振る舞いリセット
@@ -290,12 +315,14 @@ void Player::Update() {
 	case Behavior::kRoot:
 	default:
 		// 通常行動
-		BehaviorRootUpdata();
+		BehaviorRootUpdate();
 		break;
 	case Behavior::kAttack:
 		// 攻撃
-		BehaviorAttackUpdata();
+		BehaviorAttackUpdate();
 		break;
+	case Behavior::kDash:
+		BehaviorDashUpdate();
 	}
 
 	

@@ -11,7 +11,7 @@ void FollowCamera::Initialize() {
 
 void FollowCamera::Update() {
 
-	/*/ ゲームパッドの状態を得る変数(XINPUT)
+	// ゲームパッドの状態を得る変数(XINPUT)
 	XINPUT_STATE joyState;
 
 	
@@ -23,7 +23,7 @@ void FollowCamera::Update() {
 
 		viewProjection_.rotation_.y += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * kCharacterSpeed;
 	}
-	*/
+	
 
 
 	// 回転速度
@@ -36,8 +36,8 @@ void FollowCamera::Update() {
 	}
 	
 	viewProjection_.rotation_.y += kCharacterSpeed;
-
-
+	
+	
 	//追従対象がいれば
 	if (target_) {
 	//追跡対象からカメラまでのオフセット
@@ -56,14 +56,10 @@ void FollowCamera::Update() {
 		viewProjection_.translation_ = utility_->Add(target_->translation_, offset);
 	    
 	}
-
+	
 	//ビュー行列の更新
 	viewProjection_.UpdateMatrix();
-	ImGui::Begin("Cmaera");
-	ImGui::Text(
-	    "FCameraPos %f,%f,%f", viewProjection_.matView.m[3][0], viewProjection_.matView.m[3][1],
-	    viewProjection_.matView.m[3][2]);
-	ImGui::End();
+	
 
 }
 
