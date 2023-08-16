@@ -27,6 +27,8 @@ public:
 	//浮遊ギミックの更新
 	void UpdateFloatingGimmick();
 
+	void Relationship();
+
 private:
 	WorldTransform worldTransformBase_;
 	WorldTransform worldTransformB_;
@@ -53,7 +55,7 @@ private:
 	float amplitudeArm = 0.3f;
 	//円周率
 	float Pi = 0.0f;
-
+	float destinationAngleY = 0.0f;
 	// 数学関数
 	std::unique_ptr<Utility> utility_;
 	

@@ -351,9 +351,11 @@ float Utility::LerpShortAngle(float a, float b, float t) {
 	float diff = b - a;
 
 	if (Pi < diff) {
-		Lerp = std::fmod(diff, -2.0f * Pi);
+		Lerp = std::fmod(diff-2.0f*Pi, 2.0f * Pi);
 	} else if (-Pi > diff) {
-		Lerp = std::fmod(diff, 2.0f * Pi);
+		Lerp = std::fmod(diff+2.0f*Pi, 2.0f * Pi);
+	} else {
+		Lerp = diff;
 	}
 	
 	return a + Lerp * t;

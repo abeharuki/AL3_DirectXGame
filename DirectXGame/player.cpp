@@ -3,6 +3,28 @@
 #include "ImGuiManager.h"
 #include <iostream>
 
+void Player::Relationship() {
+	// 階層アニメーション
+	worldTransformB_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformB_.scale_, worldTransformB_.rotation_, worldTransformB_.translation_),
+	    worldTransformBase_.matWorld_);
+	worldTransformH_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformH_.scale_, worldTransformH_.rotation_, worldTransformH_.translation_),
+	    worldTransformB_.matWorld_);
+	// 腕
+	worldTransformL_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformL_.scale_, worldTransformL_.rotation_, worldTransformL_.translation_),
+	    worldTransformB_.matWorld_);
+	worldTransformR_.matWorld_ = utility_->Multiply(
+	    utility_->MakeAffineMatrix(
+	        worldTransformR_.scale_, worldTransformR_.rotation_, worldTransformR_.translation_),
+	    worldTransformB_.matWorld_);
+
+	
+}
 
 
 void Player::Initialize(Model* modelBody, Model* modelHead,
@@ -27,11 +49,15 @@ void Player::Initialize(Model* modelBody, Model* modelHead,
 	worldTransformL_.Initialize();
 	worldTransformR_.Initialize();
 
-	// 親子関係
-	worldTransformB_.parent_ = worldTransformBase_.parent_;
-	worldTransformH_.parent_ = worldTransformBase_.parent_;
-	worldTransformL_.parent_ = worldTransformBase_.parent_;
-	worldTransformR_.parent_ = worldTransformBase_.parent_;
+	
+	// 位置の調整
+	// 頭
+	worldTransformH_.translation_.y = 1.5f;
+	// 腕
+	worldTransformL_.translation_.x = -0.5f;
+	worldTransformR_.translation_.x = 0.5f;
+	worldTransformL_.translation_.y = 1.3f;
+	worldTransformR_.translation_.y = 1.3f;
 
 	
 }
@@ -74,93 +100,24 @@ void Player::Update() {
 		if (isMove) {
 			worldTransformBase_.translation_ =
 			    utility_->Add(worldTransformBase_.translation_, move);
-			worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
+			destinationAngleY = std::atan2(move.x, move.z);
 		}
 
-		worldTransformB_.rotation_.y = worldTransformBase_.rotation_.y;
-		worldTransformH_.rotation_.y = worldTransformBase_.rotation_.y;
-		worldTransformL_.rotation_.y = worldTransformBase_.rotation_.y;
-		worldTransformR_.rotation_.y = worldTransformBase_.rotation_.y;
+	
 
 		worldTransformBase_.rotation_.y =
-		    utility_->LerpShortAngle(worldTransformBase_.rotation_.y, 0.0f, 1.0f);
+		    utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY, 0.2f);
 		
 	}
 	
-	/*/ 移動速度
-	const float kCharacterSpeed = 0.2f;
-	// 移動量
-	Vector3 move = {0.0f, 0.0f,0.0f};
-
-	// 左右移動
-	if (input_->PushKey(DIK_A)) {
-		move.x -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_D)) {
-		move.x += kCharacterSpeed;
-	}
-
-	// 上下移動
-	if (input_->PushKey(DIK_S)) {
-		move.z -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_W)) {
-		move.z += kCharacterSpeed;
-	}
-	//
-
-	//move = utility_->Normalize(move);
-
-	Matrix4x4 rotateMatrix = utility_->Multiply(
-	    utility_->MakeRotateXMatrix(viewProjection_->rotation_.x),
-	    utility_->Multiply(
-	        utility_->MakeRotateYMatrix(viewProjection_->rotation_.y),
-	        utility_->MakeRotateZMatrix(viewProjection_->rotation_.z)));
-		   
-	move = utility_->TransformNormal(move, rotateMatrix);
-
-	
-    worldTransformB_.rotation_.y = std::atan2(move.x, move.z);
-	worldTransformH_.rotation_.y = worldTransformB_.rotation_.y;
-	worldTransformL_.rotation_.y = worldTransformB_.rotation_.y;
-	worldTransformR_.rotation_.y = worldTransformB_.rotation_.y;
-
-
-	// 平行移動
-	worldTransformB_.translation_ = utility_->Add(worldTransformB_.translation_, move);
-	
-
-	
-
-	
-
-	*/
-
-	worldTransformB_.translation_.x = worldTransformBase_.matWorld_.m[3][0];
-	worldTransformB_.translation_.y = worldTransformBase_.matWorld_.m[3][1];
-	worldTransformB_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
-	
-	// 頭
-	worldTransformH_.translation_.x = worldTransformBase_.matWorld_.m[3][0];
-	worldTransformH_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.5f;
-	worldTransformH_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
-
-	// 左手
-	worldTransformL_.translation_.x = worldTransformBase_.matWorld_.m[3][0] - 0.5f;
-	worldTransformL_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.3f;
-	worldTransformL_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
-
-	// 右手
-	worldTransformR_.translation_.x = worldTransformBase_.matWorld_.m[3][0] + 0.5f;
-	worldTransformR_.translation_.y = worldTransformBase_.matWorld_.m[3][1] + 1.3f;
-	worldTransformR_.translation_.z = worldTransformBase_.matWorld_.m[3][2];
-
+	Relationship();
 
 	worldTransformBase_.UpdateMatrix();
+	worldTransformB_.TransferMatrix();
+	worldTransformH_.TransferMatrix();
+	worldTransformL_.TransferMatrix();
+	worldTransformR_.TransferMatrix();
 
-	worldTransformB_.UpdateMatrix();
-	worldTransformH_.UpdateMatrix();
-	worldTransformL_.UpdateMatrix();
-	worldTransformR_.UpdateMatrix();
-	
 
 	ImGui::Begin("Player");
 	ImGui::Text(
