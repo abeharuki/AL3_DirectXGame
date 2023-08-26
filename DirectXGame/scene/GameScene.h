@@ -15,6 +15,7 @@
 #include <DebugCamera.h>
 #include "FollowCamera.h"
 #include "Enemy.h"
+#include <EnemyBullet.h>
 
 /// <summary>
 /// ゲームシーン
@@ -46,6 +47,14 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 敵弾の追加
+	/// </summary>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	//当たり判定
+	void CheckAllCollision();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -90,6 +99,8 @@ private: // メンバ変数
 	std::unique_ptr<Model> enemyBody_;
 	//武器
 	std::unique_ptr<Model> enemyWeapon_;
+	// 敵弾
+	std::list<EnemyBullet*> enemyBullets_;
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;

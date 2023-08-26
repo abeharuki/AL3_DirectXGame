@@ -21,6 +21,9 @@ public:
 		viewProjection_ = viewProjection;
 	}
 
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 	//浮遊ギミック初期化
 	void InitializeFloatingGimmick();
 	
@@ -33,6 +36,9 @@ public:
 	//攻撃初期化
 	void BehaviorAttackInitialize();
 
+	// コンボ期化
+	void BehaviorComboInitialize();
+
 	// ダッシュ初期化
 	void BehaviorDashInitialize();
 
@@ -42,6 +48,9 @@ public:
 	//攻撃
 	void BehaviorAttackUpdata();
 
+	//コンボ攻撃
+	void BehaviorComboUpdata();
+
 	// ダッシュ
 	void BehaviorDashUpdate();
 
@@ -50,6 +59,9 @@ public:
 
 	//調整項目の適用
 	void ApplyGlobalVariables();
+
+	// 衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
 
 private:
 	WorldTransform worldTransformBase_;
@@ -82,7 +94,7 @@ private:
 
 	Input* input_ = nullptr;
 
-	
+	bool isDamage_ = false;
 
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
@@ -113,6 +125,7 @@ private:
 	enum class Behavior {
 		kRoot,   // 通常状態
 		kAttack, // 攻撃中
+		kAttackCombo1, // コンボ１
 		kDash,   // ダッシュ
 	};
 

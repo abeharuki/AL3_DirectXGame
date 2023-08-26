@@ -4,6 +4,49 @@
 #include <AxisIndicator.h>
 #include "GlobalVariables.h"
 
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) { 
+	enemyBullets_.push_back(enemyBullet); 
+}
+
+void GameScene::CheckAllCollision() {
+	// 判定対象AとBの座標
+	Vector3 posA, posB;
+
+
+	// 敵弾リスト
+	const std::list<EnemyBullet*>& enemyBullets = enemyBullets_;
+
+#pragma region 自キャラと敵弾の当たり判定
+	// 自キャラ座標
+	posA = player_->GetWorldPosition();
+
+	// 自キャラと敵弾全ての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+		// 敵弾の座標
+		posB = bullet->GetWorldPosition();
+
+		// 距離
+		float distance = (posB.x - posA.x) * (posB.x - posA.x) +
+		                 (posB.y - posA.y) * (posB.y - posA.y) +
+		                 (posB.z - posA.z) * (posB.z - posA.z);
+		float R1 = 1.0f;
+		float R2 = 1.0f;
+		if (distance <= (R1 + R2) * (R1 + R2)) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+		
+		}
+	}
+#pragma endregion
+
+#pragma region 自キャラの攻撃と敵キャラの当たり判定
+	// 敵座標
+	//posA = enemy->GetWorldPosition();
+	// 自キャラの弾の座標
+	//posB = bullet->GetWorldPosition();
+#pragma endregion
+}
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {}
@@ -66,10 +109,11 @@ void GameScene::Initialize() {
 	enemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
 	enemyWeapon_.reset(Model::CreateFromOBJ("needle_Weapon", true));
 	// 敵キャラモデル
-	std::vector<Model*> enemyModels = {enemyBody_.get(), enemyWeapon_.get(), enemyWeapon_.get()};
+	std::vector<Model*> enemyModels = {
+	    Model::Create(), enemyWeapon_.get(), enemyWeapon_.get(), Model::Create()};
 	// 敵キャラの初期化
 	enemy_->Initialize(enemyModels);
-
+	enemy_->SetPlayer(player_.get());
 
 	//天球
 	skydome_ = std::make_unique<Skydome>();
@@ -114,7 +158,7 @@ void GameScene::Update() {
 	player_->Update();
 	enemy_->Update();
 	
-
+	CheckAllCollision();
 #ifdef _DEBUG
 
 	 if (input_->PushKey(DIK_2)) {

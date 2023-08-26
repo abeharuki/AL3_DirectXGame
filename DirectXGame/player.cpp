@@ -57,6 +57,9 @@ void Player::BehaviorRootInitialize() {
 	worldTransformRarm2_.translation_.x = 0.0f;
 	worldTransformLarm2_.translation_.y = -0.65f;
 	worldTransformRarm2_.translation_.y = -0.65f;
+
+	worldTransformRarm1_.rotation_.y = 0.0f;
+	worldTransformRarm1_.rotation_.z = 0.0f;
 	//足
 	worldTransformLfeet1_.translation_.x = -0.48f;
 	worldTransformLfeet1_.translation_.y = 0.24f;
@@ -75,9 +78,9 @@ void Player::BehaviorRootInitialize() {
 // 攻撃初期化
 void Player::BehaviorAttackInitialize() {
 	worldTransformRarm1_.rotation_.x = -2.5f;
-	worldTransformLarm1_.rotation_.x = -2.5f;
+	
 	// 武器
-	worldTransformW_.translation_.x = 0.5f;
+	worldTransformW_.translation_.x = 0.0f;
 	worldTransformW_.rotation_.x = -3.1f;
 	//アタックスピード
 	attackkSpeed = -0.1f;
@@ -86,6 +89,17 @@ void Player::BehaviorAttackInitialize() {
 	changeTime = 1.0f;
 
 }
+
+//コンボ初期化
+void Player::BehaviorComboInitialize(){
+	worldTransformRarm1_.rotation_.x = -1.0f;
+	worldTransformRarm1_.rotation_.z = 1.5f;
+	// アタックスピード
+	attackkSpeed = -0.1f;
+	attack = false;
+	attackTime = 1.0f;
+	changeTime = 1.0f;
+};
 
 // ダッシュ初期化
 void Player::BehaviorDashInitialize() {
@@ -138,8 +152,7 @@ void Player::BehaviorRootUpdata() {
 			utility_->LerpShortAngle(worldTransformBase_.rotation_.y, destinationAngleY_, 0.2f);
 	}
 
-
-
+	
 
 
 	if (walk) {
@@ -162,7 +175,7 @@ void Player::BehaviorRootUpdata() {
 	
 
      // 攻撃
-	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+	if (joyState.Gamepad.wButtons& XINPUT_GAMEPAD_B) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
@@ -176,21 +189,30 @@ void Player::BehaviorRootUpdata() {
 
 // 攻撃
 void Player::BehaviorAttackUpdata() {
-	
+	// ゲームパッドの状態を得る変数(XINPUT)
+	XINPUT_STATE joyState;
 
-	worldTransformLarm1_.rotation_.x += attackkSpeed;
+
+	//worldTransformLarm1_.rotation_.x += attackkSpeed;
 	worldTransformRarm1_.rotation_.x += attackkSpeed;
 
-	if (worldTransformLarm1_.rotation_.x <= -3.5f) {
+	if (worldTransformRarm1_.rotation_.x <= -3.5f) {
 		attack = true;
 	}
 
 
-	if (worldTransformLarm1_.rotation_.x > -1.7f) {
+	if (worldTransformRarm1_.rotation_.x > -1.7f) {
 		attackkSpeed = 0.0f;
 		
 		if (changeTime > 0) {
 			changeTime -= 0.1f;
+			// ジョイスティックの状態取得
+			if (input_->GetInstance()->GetJoystickState(0, joyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+					behaviorRequest_ = Behavior::kAttackCombo1;
+				}
+			}
+		
 		} else {
 			behaviorRequest_ = Behavior::kRoot;
 		}
@@ -201,7 +223,7 @@ void Player::BehaviorAttackUpdata() {
 		attackkSpeed = 0.0f;
 		if (attackTime <= 0) {
 			attackkSpeed = 0.1f;
-			attackkSpeed = 0.1f;
+			
 			
 		}
 		
@@ -210,6 +232,32 @@ void Player::BehaviorAttackUpdata() {
 
 
 }
+
+//コンボ攻撃
+void Player::BehaviorComboUpdata(){ 
+	worldTransformRarm1_.rotation_.x += attackkSpeed;
+	if (worldTransformRarm1_.rotation_.x <= -2.0f) {
+		attack = true;
+	}
+
+	if (worldTransformRarm1_.rotation_.x < -1.0f) {
+		attackkSpeed = 0.0f;
+
+		if (changeTime > 0) {
+			changeTime -= 0.1f;
+			
+		} else {
+			behaviorRequest_ = Behavior::kRoot;
+		}
+
+	} else if (attack) {
+		attackTime -= 0.1f;
+		attackkSpeed = 0.0f;
+		if (attackTime <= 0) {
+			attackkSpeed = 0.1f;
+		}
+	}
+};
 
 // ダッシュ
 void Player::BehaviorDashUpdate() {
@@ -230,7 +278,7 @@ void Player::BehaviorDashUpdate() {
 	}
 }
 
-
+//階層構造
 void Player::Relationship() {
 	// 階層アニメーション
 	worldTransformB_.matWorld_ = utility_->Multiply(
@@ -301,7 +349,7 @@ void Player::Relationship() {
 	worldTransformW_.matWorld_ = utility_->Multiply(
 	    utility_->MakeAffineMatrix(
 	        worldTransformW_.scale_, worldTransformW_.rotation_, worldTransformW_.translation_),
-	    worldTransformLarm1_.matWorld_);
+	    worldTransformRarm1_.matWorld_);
 }
 
 void Player::ApplyGlobalVariables() {
@@ -326,6 +374,24 @@ void Player::ApplyGlobalVariables() {
 	amplitude = globalVaribles->GetFloatIntValue(groupName, "amplitude");
 	amplitudeArm = globalVaribles->GetFloatIntValue(groupName, "amplitudeArm");
 #endif
+}
+
+Vector3 Player::GetWorldPosition() {
+	// ワールド座標を入れる関数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	worldPos.x = worldTransformBase_.translation_.x;
+	worldPos.y = worldTransformBase_.translation_.y;
+	worldPos.z = worldTransformBase_.translation_.z;
+	return worldPos;
+}
+
+void Player::OnCollision() { 
+	isDamage_ = true; 
+	ImGui::Begin("Window");
+	ImGui::Text("%d", isDamage_);
+	
+	ImGui::End();
 }
 
 void Player::Initialize(const std::vector<Model*>& models) {
@@ -396,6 +462,9 @@ void Player::Update() {
 		case Behavior::kAttack:
 			BehaviorAttackInitialize();
 			break;
+		case Behavior::kAttackCombo1:
+			BehaviorComboInitialize();
+			break;
 		case Behavior::kDash:
 			BehaviorDashInitialize();
 			break;
@@ -420,6 +489,10 @@ void Player::Update() {
 		// 攻撃
 		BehaviorAttackUpdata();
 		break;
+	case Behavior::kAttackCombo1:
+		// コンボ
+		BehaviorAttackUpdata();
+		break;
 	case Behavior::kDash:
 		BehaviorDashUpdate();
 		break;
@@ -440,9 +513,7 @@ void Player::Update() {
 	worldTransformRfeet2_.TransferMatrix();
 	worldTransformW_.TransferMatrix();
 
-	ImGui::Begin("Window");
-	ImGui::Text("%f", worldTransformLarm2_.translation_.x);
-	ImGui::End();
+	
 
 
 	
@@ -464,7 +535,7 @@ void Player::Draw(const ViewProjection& viewprojection) {
 	models_[modelLfeet2_]->Draw(worldTransformLfeet2_, viewprojection);
 	models_[modelRfeet1_]->Draw(worldTransformRfeet1_, viewprojection);
 	models_[modelRfeet2_]->Draw(worldTransformRfeet2_, viewprojection);
-	if (behavior_ == Behavior::kAttack) {
+	if (behavior_ == Behavior::kAttack || behavior_ == Behavior::kAttackCombo1) {
 		models_[modelWeapon_]->Draw(worldTransformW_, viewprojection);
 	}
 	
