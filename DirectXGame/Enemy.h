@@ -5,19 +5,22 @@
 #include <optional>
 #include <list>
 #include "EnemyBullet.h"
+#include "Sprite.h"
 
 // 自機クラスの前方宣言
 class Player;
 class Enemy : public BaseCharacter {
 public:
 
-	~Enemy();
+	
 
-	void Initialize(const std::vector<Model*>& models) override;
+	void Initialize(const std::vector<Model*>& models,bool scene) override;
 
 	void Update() override;
 
 	void Draw(const ViewProjection& viewprojection) override;
+
+	void DrawUI();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
@@ -39,6 +42,9 @@ public:
 	// 攻撃初期化
 	void BehaviorAttack2Initialize();
 
+	// 死亡初期化
+	void BehaviorDeadInitialize();
+
 	// 攻撃可能
 	void BehaviorisHitInitialize();
 
@@ -54,6 +60,9 @@ public:
 	//攻撃可能
 	void BehaviorisHitUpdata();
 
+	// 死亡初期化
+	void BehaviorDeadUpdata();
+
 	// パーツ親子関係
 	void Relationship();
 
@@ -68,8 +77,40 @@ public:
 	  return false;
 	}
 
+	//弾を打ってるときだけ当たり判定を許可する
+	bool OnBullet() const {
+	  if (behavior_ == Behavior::kAttack) {
+
+			return true;
+	  }
+	  return false;
+	}
+
+	//攻撃2の当たり判定を許可
+	bool OnAttack2() const {
+	  if (behavior_ == Behavior::kAttack2) {
+
+			return true;
+	  }
+	  return false;
+	}
+
+	// 攻撃の状態
+	int attackState();
+
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
+
+	//弾リストの取得
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+
+	bool isDead() const {
+	  if (isDead_) {
+
+			return true;
+	  }
+	  return false;
+	}
 
 private:
 
@@ -87,6 +128,11 @@ private:
 	
 	Input* input_ = nullptr;
 
+	// HP
+	float HP_ = 5000;
+	// 死亡フラグ
+	bool isDead_ = false;
+	// ダメージフラグ
 	bool isDamage_ = false;
 
 	//3Dモデル
@@ -120,6 +166,7 @@ private:
 	bool attack3;
 	bool attack4;
 	bool attack5;
+	bool attack6;
 	Vector3 velocity_;
 	Vector3 velocity2_;
 
@@ -128,15 +175,15 @@ private:
 
 	//行動の切り替え
 	float changeTimer_ = 0.0f;
-
+	float time_ = 0.0f;
 	// 振る舞い
 	enum class Behavior {
 		kRoot,    // 通常状態
 		kAttack,  // 攻撃中
 		kAttack2, // 攻撃２
 		kAttack3, // 攻撃3
-		kHit,     //攻撃可能状態
-	
+		kHit,     // 攻撃可能状態
+		kDead,    // 死亡
 	};
 
 	Behavior behavior_ = Behavior::kRoot;
@@ -148,4 +195,8 @@ private:
 
 	// 自キャラ
 	Player* player_ = nullptr;
+	// ゲームシーン
+	bool scene_;
+
+	Sprite* spriteHP_ = nullptr;
 };

@@ -37,7 +37,7 @@ struct WorldTransform {
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~WorldTransform();
+	//~WorldTransform();
 
 	/// <summary>
 	/// 初期化

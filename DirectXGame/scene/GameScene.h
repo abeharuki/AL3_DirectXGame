@@ -56,6 +56,38 @@ public: // メンバ関数
 	//当たり判定
 	void CheckAllCollision();
 
+	// タイトル初期化
+	void BehaviorTitleInitialize();
+
+	// シーン初期化
+	void BehaviorSceneInitialize();
+
+	// クリア初期化
+	void BehaviorClearInitialize();
+
+	// オーバー初期化
+	void BehaviorOverInitialize();
+
+
+	// タイトル
+	void BehaviorTitleUpdata();
+
+	// シーン
+	void BehaviorSceneUpdata();
+
+	// クリア
+	void BehaviorClearUpdata();
+
+	// オーバー
+	void BehaviorOverUpdata();
+
+	bool Scene() const {
+		if (scene_) {
+			return true;
+		}
+		return false;
+	}
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -114,4 +146,35 @@ private: // メンバ変数
 	
 	//レールカメラ
 	std::unique_ptr<FollowCamera> followCamera_;
+
+	enum class Behavior {
+		kTitle,         // タイトル
+		kGameScene,     // ゲームシーン
+		kGameClear,     //　ゲームクリア
+		kGameOver,      // ゲームオーバー
+	};
+
+	Behavior behavior_ = Behavior::kTitle;
+	// 次の振る舞いリクエスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	bool scene_;
+
+
+	Sprite* spriteTitle_ = nullptr;
+	Sprite* spritePush_ = nullptr;
+	Sprite* spriteClear_ = nullptr;
+	Sprite* spriteOver_ = nullptr;
+	
+	//2D画像の座標
+	Vector2 titlePos;
+	Vector2 pushPos;
+	bool title_ = false;
+	int timer_ = 0;
+
+	//アルファ値
+	float a = 0;
+	
+	//UIの表示
+	bool UI = false;
 };

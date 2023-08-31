@@ -50,7 +50,7 @@ void FollowCamera::Update() {
 	// ジョイスティックの状態取得
 	if (input_->GetInstance()->GetJoystickState(0, joyState)) {
 		// 回転速度
-		float kCharacterSpeed = 0.1f;
+		float kCharacterSpeed = 0.05f;
 
 		destinationAngleY_ += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * kCharacterSpeed;
 		destinationAngleX_ += (float)joyState.Gamepad.sThumbRY / SHRT_MAX * kCharacterSpeed/5;

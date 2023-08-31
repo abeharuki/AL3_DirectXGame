@@ -2,7 +2,7 @@
 #include <GlobalVariables.h>
 #include <cassert>
 #include <player.h>
-#include <imgui.h>
+
 
 
 Vector3 Enemy::GetWorldPosition() {
@@ -84,43 +84,62 @@ void Enemy::BehaviorAttack2Initialize(){
 	attack3 = false;
 	attack4 = false;
 	attack5 = false;
+	attack6 = false;
 };
 
 //攻撃可能状態
 void Enemy::BehaviorisHitInitialize() { 
 	worldTransformBase_.translation_.y = 1.5f;
-	changeTimer_ = 340;
+	changeTimer_ = 200;
 	textureHandle_ = textureHandle2_;
 }
 
+// 死亡初期化
+void Enemy::BehaviorDeadInitialize() {
+	time_ = 0;
+	changeTimer_ = 10;
+	textureHandle_ = textureHandle2_;
+	isDead_ = false;
+}
+
+
 //通常行動
 void Enemy::BehaviorRootUpdata() {
-	--changeTimer_;
-	if (gimmick == false) {
-		worldTransformBase_.translation_.y += 0.1f;
-	}
-	if (changeTimer_ < 0) {
-		Vector3 playerVector = player_->GetWorldPosition();
-		Vector3 enemyVector = GetWorldPosition();
-		Vector3 vector = utility_->Subract(playerVector, enemyVector);
-		vector = utility_->Normalize(vector);
-		Vector3 velocity = utility_->Multiply(0.1f, vector);
-		velocity.y = 0;
-		worldTransformBase_.translation_ =
-		    utility_->Add(worldTransformBase_.translation_, velocity);
+	if (scene_) {
+		if (!gimmick) {
+			worldTransformBase_.translation_.y += 0.1f;
+		} else {
+			--changeTimer_;
+			if (changeTimer_ > 0) {
+				Vector3 playerVector = player_->GetWorldPosition();
+				Vector3 enemyVector = GetWorldPosition();
+				Vector3 vector = utility_->Subract(playerVector, enemyVector);
+				vector = utility_->Normalize(vector);
+				Vector3 velocity = utility_->Multiply(0.5f, vector);
+				velocity.y = 0;
+				worldTransformBase_.translation_ =
+				    utility_->Add(worldTransformBase_.translation_, velocity);
+			} else {
+				int number = rand() % 2 + 1;
+				if (number == 1) {
+					behaviorRequest_ = Behavior::kAttack;
+				}
+
+				if (number == 2) {
+					behaviorRequest_ = Behavior::kAttack2;
+				}
+			}
+		}
 	}
 	
-
-	if (input_->PushKey(DIK_LEFTARROW)) {
-		behaviorRequest_ = Behavior::kAttack;
-	}
-
-	if (input_->PushKey(DIK_RIGHTARROW)) {
-		behaviorRequest_ = Behavior::kAttack2;
-	}
+	
+	
 
 	
-	if (worldTransformBase_.translation_.y >=5.0f) {
+
+	
+	
+	if (worldTransformBase_.translation_.y >=8.0f||!scene_) {
 		gimmick = true; 
 		
 	}
@@ -152,11 +171,13 @@ void Enemy::BehaviorAttackUpdata(){
 				Vector3 vector = utility_->Subract(playerVector, enemyVector);
 				vector = utility_->Normalize(vector);
 				Vector3 velocity = utility_->Multiply(kBulletSpeed, vector);
-
+				
 				// 弾を生成、初期化
 				EnemyBullet* newBullet = new EnemyBullet();
 				newBullet->Initialize(
-				    models_[modelBullet], worldTransformBase_.translation_, velocity);
+				    models_[modelBullet], worldTransformBase_.translation_,
+				    worldTransformBase_.scale_, worldTransformBase_.rotation_, velocity,
+				    textureHandle1_);
 
 				bullets_.push_back(newBullet);
 				fireTimer_ = 20;
@@ -183,9 +204,7 @@ void Enemy::BehaviorAttackUpdata(){
 		
 	}
 
-	ImGui::Begin("Window");
-	ImGui::Text("%f", changeTimer_);
-	ImGui::End();
+	
 };
 
 //攻撃2
@@ -305,6 +324,7 @@ void Enemy::BehaviorAttack2Updata(){
 					worldTransformBase_.translation_.y = 1.5f;
 					attack2 = true;
 					if (fireTimer_ <= -30) {
+						attack6 = true;
 						if (worldTransformB_.scale_.z > 1) {
 							worldTransformBase_.translation_.z += 0.1f;
 							worldTransformB_.scale_.x -= size.x;
@@ -341,24 +361,68 @@ void Enemy::BehaviorAttack2Updata(){
 	if (changeTimer_ <= 0) {
 		
 	}
-	ImGui::Begin("Window");
-	ImGui::Text("%d", attack);
-	ImGui::Text("%f", worldTransformBase_.translation_.y);
-	ImGui::End();
+	
 	
 };
-
 
 //攻撃可能状態
 void Enemy::BehaviorisHitUpdata() {
 	--changeTimer_;
-	if (changeTimer_ <= 0) {
+	if (HP_ <= 0) {
+		behaviorRequest_ = Behavior::kDead;
+	}else if (changeTimer_ <= 0) {
 		behaviorRequest_ = Behavior::kRoot;
+		
 	}
-	ImGui::Begin("Window");
+
 	
-	ImGui::Text("%f", changeTimer_);
-	ImGui::End();
+}
+
+// 死亡
+void Enemy::BehaviorDeadUpdata() { 
+
+	if (worldTransformBase_.translation_.y < 10) {
+		worldTransformBase_.translation_.y += 0.05f;
+	} else {
+		++time_;
+		if (time_ >= 10) {
+			isDead_ = true;
+		}
+		
+	}
+
+	if (isDead_) {
+		--changeTimer_;
+		if (changeTimer_ > 0) {
+			for (int i = 0; i < 15; ++i) {
+			  Vector3 velocity = {0, 0, 0};
+			  float numberX = (rand() % 11 - 5) / 5.0f;
+			  float numberY = (rand() % 11 - 5) / 5.0f;
+			  float numberZ = (rand() % 11 - 5) / 5.0f;
+			  velocity = {numberX, numberY, numberZ};
+			  // 弾を生成、初期化
+			  EnemyBullet* newBullet = new EnemyBullet();
+			  newBullet->Initialize(
+				  models_[modelBullet], worldTransformBase_.translation_, {0.5f, 0.5f, 0.5f},
+				  velocity, velocity, textureHandle2_);
+
+			  bullets_.push_back(newBullet);
+			}
+		}
+
+		for (EnemyBullet* bullet : bullets_) {
+
+			bullet->Update();
+		}
+
+		if (changeTimer_ < -60) {
+			bullets_.remove_if([](EnemyBullet* bullet) {
+				delete bullet;
+				return true;
+			});
+		}
+	}
+	
 }
 
 // 階層構造
@@ -397,19 +461,32 @@ void Enemy::ApplyGlobalVariables() {
 #endif
 }
 
-void Enemy::OnCollision() { isDamage_ = true; }
 
-Enemy::~Enemy() {
-
-	for (EnemyBullet* bullet : bullets_) {
-
-		delete bullet;
+//攻撃2の状態
+int Enemy::attackState() { 
+	int state = 0;
+	if (behavior_ != Behavior::kAttack2) {
+		state = 0;
+	}else if (attack && !attack5) {
+		state = 1;
+	}else if (attack2) {
+		state = 2;
+	}else if (attack5) {
+		state = 3;
+	} else if (attack6) {
+		state = 4;
 	}
+	return state;
 }
 
-void Enemy::Initialize(const std::vector<Model*>& models) { 
+void Enemy::OnCollision() {
+	isDamage_ = true;
+	
+}
+
+void Enemy::Initialize(const std::vector<Model*>& models ,bool scene) { 
 	// 基底クラスの初期化
-	BaseCharacter::Initialize(models);
+	BaseCharacter::Initialize(models,scene);
 	input_ = Input::GetInstance();
 	utility_ = std::make_unique<Utility>();
 
@@ -417,13 +494,17 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	textureHandle2_ = TextureManager::Load("Enemy.png");
 	textureHandle_ = textureHandle1_;
 
+
+	uint32_t textureHP_ = TextureManager::Load("enemyHP.png");
+	spriteHP_ = Sprite::Create(textureHP_, {1280/2, 720/2 -50}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+
 	worldTransformBase_.Initialize();
 	worldTransformB_.Initialize();
 	worldTransformL_.Initialize();
 	worldTransformR_.Initialize();
 
 	
-	worldTransformBase_.translation_.x = -5;
+	
 	worldTransformBase_.translation_.y = 5;
 	worldTransformBase_.translation_.z = 30;
 
@@ -439,6 +520,10 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_.rotation_.y = 1.6f;
 	worldTransformR_.rotation_.z = -1.5f;
 
+	HP_ = 5000;
+	isDead_ = false;
+	changeTimer_ = 150;
+	scene_ = scene;
 	//ギミック初期化
 	InitializeFloatingGimmick();
 
@@ -467,8 +552,13 @@ void Enemy::Update() {
 		});
 	}
 
-		
+	if (isDamage_) {
+		HP_ -= 30;
+		isDamage_ = false;
+	}
 	
+	spriteHP_->SetSize({1280.0f * (HP_ / 5000), 720.0f});
+
 	if (behaviorRequest_) {
 		// 振る舞い変更
 		behavior_ = behaviorRequest_.value();
@@ -486,6 +576,9 @@ void Enemy::Update() {
 			break;
 		case Behavior::kHit:
 			BehaviorisHitInitialize();
+			break;
+		case Behavior::kDead:
+			BehaviorDeadInitialize();
 			break;
 		}
 
@@ -518,6 +611,9 @@ void Enemy::Update() {
 		//攻撃可能状態
 		BehaviorisHitUpdata();
 		break;
+	case Behavior::kDead:
+		BehaviorDeadUpdata();
+		break;
 	}
 
 	
@@ -528,7 +624,7 @@ void Enemy::Update() {
 	worldTransformL_.TransferMatrix();
 	worldTransformR_.TransferMatrix();
 
-
+	
 
 
 #ifdef _DEBUG
@@ -538,15 +634,24 @@ void Enemy::Update() {
 }
 
 void Enemy::Draw(const ViewProjection& viewprojection) {
-	models_[modelBody_]->Draw(worldTransformB_, viewprojection,textureHandle_);
-	models_[modelL_arm_]->Draw(worldTransformL_, viewprojection);
-	models_[modelR_arm_]->Draw(worldTransformR_, viewprojection);
+	if (!isDead_) {
+		models_[modelBody_]->Draw(worldTransformB_, viewprojection, textureHandle_);
+		models_[modelL_arm_]->Draw(worldTransformL_, viewprojection);
+		models_[modelR_arm_]->Draw(worldTransformR_, viewprojection);
 
+	}
+	
 	// 弾の描画
     for (EnemyBullet* bullet : bullets_) {
     	bullet->Draw(viewprojection);
     }
 	
-		
 	
+	
+}
+
+void Enemy::DrawUI() { 
+	if (HP_ > 0) {
+		spriteHP_->Draw();
+	}
 }

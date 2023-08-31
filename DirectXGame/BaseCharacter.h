@@ -5,7 +5,7 @@
 class BaseCharacter {
 
 public:
-	virtual void Initialize(const std::vector<Model*>& models);
+	virtual void Initialize(const std::vector<Model*>& models, bool scene);
 
 	virtual void Update();
 
@@ -19,5 +19,5 @@ protected:
 	std::vector<Model*> models_;
 	//ワールド変換データ
 	WorldTransform worldtransform_;
-
+	bool scene_;
 };

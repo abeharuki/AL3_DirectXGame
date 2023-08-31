@@ -5,15 +5,18 @@
 #include "Utility.h"
 #include "BaseCharacter.h"
 #include <optional>
+#include "Sprite.h"
 
 class Player : public BaseCharacter{
 public:
 	
-	void Initialize(const std::vector<Model*>& models) override;
+	void Initialize(const std::vector<Model*>& models, bool scene) override;
 
 	void Update() override;
 
 	void Draw(const ViewProjection& viewprojection) override;
+
+	void DrawUI();
 
     const WorldTransform& GetWorldTransform() { return worldTransformBase_; }
 
@@ -23,6 +26,9 @@ public:
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	// 攻撃のワールド座標を取得
+	Vector3 GetAttackWorldPosition();
 
 	//浮遊ギミック初期化
 	void InitializeFloatingGimmick();
@@ -42,6 +48,9 @@ public:
 	// ダッシュ初期化
 	void BehaviorDashInitialize();
 
+	// 死亡初期化
+	void BehaviorDeadInitialize();
+
 	//行動
 	void BehaviorRootUpdata();
 
@@ -54,6 +63,9 @@ public:
 	// ダッシュ
 	void BehaviorDashUpdate();
 
+	// 死亡初期化
+	void BehaviorDeadUpdata();
+
 	//パーツ親子関係
 	void Relationship();
 
@@ -62,6 +74,33 @@ public:
 
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
+
+	// 衝突してないときに呼び出されるコールバック関数
+	void OnSeparation();
+
+	bool isHit() {
+		if (isDamage_) {
+
+			return true;
+		}
+		return false;
+	}
+
+	bool isAttack() const {
+		if (attack) {
+
+			return true;
+		}
+		return false;
+	}
+
+	bool isDead() const {
+		if (isDead_) {
+
+			return true;
+		}
+		return false;
+	}
 
 private:
 	WorldTransform worldTransformBase_;
@@ -76,6 +115,8 @@ private:
 	WorldTransform worldTransformRfeet1_;
 	WorldTransform worldTransformRfeet2_;
 	WorldTransform worldTransformW_;
+	WorldTransform worldTransformWW_;
+
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
@@ -94,6 +135,11 @@ private:
 
 	Input* input_ = nullptr;
 
+	//HP
+	float HP_ = 2000;
+	//死亡フラグ
+	bool isDead_ = false;
+	//ダメージフラグ
 	bool isDamage_ = false;
 
 	//浮遊ギミックの媒介変数
@@ -108,6 +154,8 @@ private:
 
 	//歩くフラグ
 	bool walk = false;
+
+	float dashTimer = 60;
 
 	//攻撃フラグ
 	bool attack = false;
@@ -127,6 +175,7 @@ private:
 		kAttack, // 攻撃中
 		kAttackCombo1, // コンボ１
 		kDash,   // ダッシュ
+		kDead,   // 死亡
 	};
 
 	Behavior behavior_ = Behavior::kRoot;
@@ -138,4 +187,9 @@ private:
 		uint32_t dashParameter_ = 0;
 	};
 	WorkDash workDash_;
+
+	bool scene_;
+
+	Sprite* spriteHP_ = nullptr;
+	Sprite* s_ = nullptr;
 };

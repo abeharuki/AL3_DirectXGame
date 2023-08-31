@@ -1,8 +1,8 @@
 #include "BaseCharacter.h"
 #include <cassert>
 
-void BaseCharacter::Initialize(const std::vector<Model*>& models) {
-	
+void BaseCharacter::Initialize(const std::vector<Model*>& models,bool scene) {
+	scene_ = scene;
 	models_ = models;
 	worldtransform_.Initialize();
 

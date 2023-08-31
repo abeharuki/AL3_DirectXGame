@@ -1,14 +1,13 @@
 #include "EnemyBullet.h"
-#include "ImGuiManager.h"
 #include <cassert>
 
 Vector3 EnemyBullet::GetWorldPosition() {
 	// ワールド座標を入れる関数
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得（ワールド座標）
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
 
@@ -45,15 +44,19 @@ EnemyBullet::~EnemyBullet() { delete utility_; }
 /// <summary>
 /// 初期化
 /// </summary>
-void EnemyBullet::Initialize(Model* model, Vector3& position, const Vector3& velocity) {
+void EnemyBullet::Initialize(
+    Model* model, Vector3& position, const Vector3& scale, Vector3& rotation,
+    const Vector3& velocity,
+    uint32_t& textureHandle){
 
 	assert(model);
-	textureHandle_ = TextureManager::Load("EnemyBullet.png");
+	textureHandle_ = textureHandle;
 	model_ = model;
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	
+	worldTransform_.scale_ = scale;
+	worldTransform_.rotation_ = rotation;
 	// 引数で受け取った速度をメンバ変数に代入
 	velocity_ = velocity;
 };
