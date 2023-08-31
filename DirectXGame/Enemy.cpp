@@ -520,7 +520,7 @@ void Enemy::Initialize(const std::vector<Model*>& models ,bool scene) {
 	worldTransformR_.rotation_.y = 1.6f;
 	worldTransformR_.rotation_.z = -1.5f;
 
-	HP_ = 5000;
+	HP_ = 0;
 	isDead_ = false;
 	changeTimer_ = 150;
 	scene_ = scene;
@@ -543,6 +543,13 @@ void Enemy::Initialize(const std::vector<Model*>& models ,bool scene) {
 
 void Enemy::Update() { 
 	
+	if (!fight_) {
+		HP_ += 50;
+	}
+	if (HP_ >= 5000) {
+		fight_ = true;
+		
+	}
 	
 	// デスフラグが立った弾を削除
 	if(behaviorRequest_ == Behavior::kHit){

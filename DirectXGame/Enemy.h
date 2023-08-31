@@ -134,6 +134,8 @@ private:
 	bool isDead_ = false;
 	// ダメージフラグ
 	bool isDamage_ = false;
+	bool fight_ = false;
+
 
 	//3Dモデル
 	int modelBody_ = 0;
